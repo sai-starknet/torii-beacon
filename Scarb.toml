@@ -1,0 +1,20 @@
+[package]
+cairo-version = "=2.9.2"
+edition = "2024_07"
+description = "The Dojo Beacon fort interfacing with Torii"
+name = "dojo_beacon"
+version = "0.1.0"
+experimental-features = ["negative_impls"]
+
+[dependencies]
+starknet = "=2.9.2"
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.2.1" }
+
+[dev-dependencies]
+dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.2.1" }
+cairo_test = "=2.9.2"
+
+[lib]
+
+[[target.starknet-contract]]
+sierra = true
