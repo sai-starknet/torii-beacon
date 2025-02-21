@@ -31,12 +31,12 @@ pub impl NamespaceBeacon<
 > of NamespaceBeaconTrait<TState> {
     fn register_namespace(ref self: TState, namespace: ByteArray) {
         let mut resource = self.get_component_mut();
-        BeaconEventsImpl::emit_namespace_registered(ref resource, namespace, NAMESPACE_HASH);
+        ResourceRegisterImpl::set_new_namespace(ref resource, namespace, NAMESPACE_HASH);
     }
 
     fn register_model(ref self: TState, namespace: ByteArray, class_hash: ClassHash) {
         let mut resource = self.get_component_mut();
-        ResourceRegisterImpl::emit_and_deploy_model_contract(ref resource, namespace, class_hash);
+        ResourceRegisterImpl::set_new_model(ref resource, namespace, NAMESPACE_HASH, class_hash);
     }
 
     fn emit_model<M, +Model<M>>(ref self: TState, model: @M) {

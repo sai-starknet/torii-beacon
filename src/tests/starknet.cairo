@@ -1,7 +1,10 @@
-use starknet::{ClassHash, ContractAddress};
 use core::metaprogramming::TypeEqual;
-use dojo_beacon::starknet::{calculate_contract_address, calculate_udc_contract_address};
+use core::poseidon::poseidon_hash_span;
+use starknet::{ClassHash, ContractAddress};
 use starknet::{syscalls::{get_class_hash_at_syscall}, SyscallResultTrait};
+
+use dojo_beacon::starknet::{calculate_contract_address, calculate_udc_contract_address};
+use dojo::utils::{bytearray_hash};
 
 #[derive(Drop)]
 struct DeployContactTestConst<const S: usize> {
@@ -129,6 +132,8 @@ fn test_calculate_udc_contract_address() {
 
 #[test]
 fn test_contract_hash() {
-    let contract_hash = get_class_hash_at_syscall(0x0.try_into().unwrap()).unwrap_syscall();
-    println!("{:?}", contract_hash);
+    let hash = poseidon_hash_span(
+        [bytearray_hash(@"dojo_starter"), bytearray_hash(@"Position")].span(),
+    );
+    println!("selector: {hash}");
 }
