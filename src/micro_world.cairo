@@ -1,22 +1,8 @@
-#[starknet::interface]
-trait IBeacon<TContractState> {
-    fn set_model(
-        ref self: TContractState,
-        selector: felt252,
-        entity_id: felt252,
-        keys: Span<felt252>,
-        values: Span<felt252>,
-    );
-    fn update_model(
-        ref self: TContractState, selector: felt252, entity_id: felt252, values: Span<felt252>,
-    );
-    fn update_member(
-        ref self: TContractState,
-        selector: felt252,
-        entity_id: felt252,
-        member_selector: felt252,
-        values: Span<felt252>,
-    );
+trait StaticModelBeacon<T, M> {
+    const SELECTOR: felt252;
+    fn set_model(ref self: T, model: @M);
+    fn update_model(ref self: T, model: @M);
+    fn update_member(ref self: T, model: @M);
 }
 
 #[starknet::contract]
@@ -27,19 +13,16 @@ mod beacon {
     };
 
     use super::IBeacon;
-    component!(path: owners_component, storage: owners, event: OwnersEvents);
-    component!(path: writers_component, storage: writers, event: WritersEvents);
     component!(path: resource_component, storage: resource, event: ResourceEvents);
 
     #[storage]
     struct Storage {
         #[substorage(v0)]
-        owners: owners_component::Storage,
-        #[substorage(v0)]
         resource: resource_component::Storage,
-        #[substorage(v0)]
-        writers: writers_component::Storage,
     }
+
+    #[constructor]
+    fn constructor(ref self: ContractState) {}
 
     #[event]
     #[derive(Drop, starknet::Event)]

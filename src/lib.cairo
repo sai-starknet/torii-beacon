@@ -24,9 +24,17 @@ pub mod interfaces {
 }
 pub mod beacon;
 
-pub mod models;
+pub mod model {
+    pub mod namespace;
+}
+
+pub mod example {
+    pub mod models;
+    pub mod components;
+    pub mod contract;
+}
 
 #[cfg(test)]
 mod tests {
-    mod utils;
+    mod starknet;
 }

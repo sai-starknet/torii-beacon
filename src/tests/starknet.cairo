@@ -1,7 +1,6 @@
 use starknet::{ClassHash, ContractAddress};
-use core::pedersen::pedersen;
 use core::metaprogramming::TypeEqual;
-use dojo_beacon::starknet::calculate_contract_address;
+use dojo_beacon::starknet::{calculate_contract_address, calculate_udc_contract_address};
 use starknet::{syscalls::{get_class_hash_at_syscall}, SyscallResultTrait};
 
 #[derive(Drop)]
@@ -56,7 +55,7 @@ impl DeployContactTestConst0TryIntoDeployContactTest of TryInto<
     }
 }
 
-const TEST_1: DeployContactTestConst = DeployContactTestConst {
+const UDC_TEST_1: DeployContactTestConst = DeployContactTestConst {
     class_hash: 0x045575a88cc5cef1e444c77ce60b7b4c9e73a01cbbe20926d5a4c72a94011410,
     deployer_address: 0x0,
     salt: 0x04226e134e72f57c0008063cb67413f6e87f2d68fb44b8277803718109f0ec14,
@@ -64,7 +63,7 @@ const TEST_1: DeployContactTestConst = DeployContactTestConst {
     expected_address: 0x26fe89cb538b9dea906afda6997f39796830cd5f093c46d62a926871cd75623,
 };
 
-const TEST_2: DeployContactTestConst = DeployContactTestConst {
+const UDC_TEST_2: DeployContactTestConst = DeployContactTestConst {
     class_hash: 0x036078334509b514626504edc9fb252328d1a240e4e948bef8d0c08dff45927f,
     deployer_address: 0x0,
     salt: 0x0441bdd54a127c1ac9354abba03cf31b8db1a194307a71dd560ebdb7c838cad0,
@@ -72,7 +71,7 @@ const TEST_2: DeployContactTestConst = DeployContactTestConst {
     expected_address: 0x079e7d055ee607f7eaedb046bdd02305e7e5c35da376f5d2e3b911d695137f24,
 };
 
-const TEST_3: DeployContactTestConst = DeployContactTestConst {
+const UDC_TEST_3: DeployContactTestConst = DeployContactTestConst {
     class_hash: 0x04904ec9bb124e7a46a1894d516032cd8876e4ea69908ead8242482c2972c78d,
     deployer_address: 0x0,
     salt: 0x79da44d4ba41e6b0,
@@ -80,7 +79,7 @@ const TEST_3: DeployContactTestConst = DeployContactTestConst {
     expected_address: 0xdfca26711708d9f58d8bed590af05e1c62b04f48be44e8948ecde08d121d78,
 };
 
-const TEST_4: DeployContactTestConst = DeployContactTestConst {
+const UDC_TEST_4: DeployContactTestConst = DeployContactTestConst {
     class_hash: 0x016342ade8a7cc8296920731bc34b5a6530f5ee1dc1bfd3cc83cb3f519d6530a,
     deployer_address: 0x000f9e998b2853e6d01f3ae3c598c754c1b9a7bd398fec7657de022f3b778679,
     salt: 0x01cf15d46087c8237c2055c1ca378f3ed64c248ad6d187ca24f22d287c63f941,
@@ -88,7 +87,7 @@ const TEST_4: DeployContactTestConst = DeployContactTestConst {
     expected_address: 0x037f5d7898454f5b2662010e28dabd19fa60de55224f49e4ced220b6c649b956,
 };
 
-const TEST_5: DeployContactTestConst = DeployContactTestConst {
+const UDC_TEST_5: DeployContactTestConst = DeployContactTestConst {
     class_hash: 0x0316c001d23331128a3c3d58051584d38ebb373047996784bd9aca12387f6564,
     deployer_address: 0x000f9e998b2853e6d01f3ae3c598c754c1b9a7bd398fec7657de022f3b778679,
     salt: 0x87f182e3e897161efc9858fcdade403d6442807b1e775e30e95831ed1fbbcb,
@@ -103,22 +102,26 @@ impl DeployContractTest of DeployContractTestTrait {
             *self.deployer_address, *self.salt, *self.class_hash, *self.calldata,
         )
     }
+
+    fn calculate_udc_contract_address(self: @DeployContactTest) -> ContractAddress {
+        calculate_udc_contract_address(
+            *self.deployer_address, *self.salt, *self.class_hash, *self.calldata,
+        )
+    }
 }
 
 
 #[test]
-fn test_calculate_contract_address() {
+fn test_calculate_udc_contract_address() {
     let tests: Span<DeployContactTest> = [
-        TEST_1.try_into().unwrap(), TEST_2.try_into().unwrap(), TEST_3.try_into().unwrap(),
-        TEST_4.try_into().unwrap(), TEST_5.try_into().unwrap(),
+        UDC_TEST_1.try_into().unwrap(), UDC_TEST_2.try_into().unwrap(),
+        UDC_TEST_3.try_into().unwrap(), UDC_TEST_4.try_into().unwrap(),
+        UDC_TEST_5.try_into().unwrap(),
     ]
         .span();
-    let val = pedersen(0, 0);
-
-    println!("\n0x{val:x}\n");
 
     for test in tests {
-        let calculated_address: felt252 = test.calculate_contract_address().into();
+        let calculated_address: felt252 = test.calculate_udc_contract_address().into();
         let expected_address: felt252 = (*test.expected_address).into();
         println!("0x{calculated_address:x}\n0x{expected_address:x}\n--------");
     }

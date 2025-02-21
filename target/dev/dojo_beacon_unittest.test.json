@@ -1,1 +1,0 @@
-{"contracts_info":[],"function_set_costs":[],"named_tests":[["dojo_beacon::tests::utils::test_calculate_contract_address",{"available_gas":4294967295,"expectation":"Success","ignored":false}],["dojo_beacon::tests::utils::test_contract_hash",{"available_gas":4294967295,"expectation":"Success","ignored":false}]]}

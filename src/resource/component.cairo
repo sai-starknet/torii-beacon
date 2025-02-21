@@ -102,10 +102,7 @@ pub mod resource_component {
 
     #[embeddable_as(BeaconResource)]
     impl IBeaconResourceImpl<
-        TContractState,
-        +HasComponent<TContractState>,
-        +Drop<TContractState>,
-        impl Owners: owners_component::HasComponent<TContractState>,
+        TContractState, +HasComponent<TContractState>, +Drop<TContractState>,
     > of IBeaconResource<ComponentState<TContractState>> {
         fn resource(self: @ComponentState<TContractState>, selector: felt252) -> DojoResource {
             self.get_resource(selector)
@@ -150,16 +147,10 @@ pub mod resource_component {
                 errors::not_namespace_or_contract_owner(caller, namespace);
             }
 
-            let salt = self.models_salt.read();
-            self.models_salt.write(salt + 1);
+            let (model_name_hash, contract_address) = self
+                .emit_and_deploy_model_contract(namespace, class_hash);
 
-            let contract_address = deploy_model_contract(class_hash);
-
-            let model_name = get_model_name(contract_address);
-
-            assert_name(@model_name);
-
-            self.set_new_model(namespace, namespace_hash, model_name, contract_address, class_hash);
+            self.set_new_model(namespace_hash, model_name_hash, contract_address, class_hash);
         }
     }
 
@@ -210,6 +201,21 @@ pub mod resource_component {
             values: Span<felt252>,
         ) {
             self.emit(StoreUpdateMember { selector, entity_id, member_selector, values });
+        }
+    }
+
+    #[generate_trait]
+    pub impl ResourceRegisterImpl<
+        TContractState, +HasComponent<TContractState>,
+    > of ResourceRegister<TContractState> {
+        fn emit_and_deploy_model_contract(
+            ref self: ComponentState<TContractState>, namespace: ByteArray, class_hash: ClassHash,
+        ) -> (felt252, ContractAddress) {
+            let contract_address = deploy_model_contract(class_hash);
+            let model_name = get_model_name(contract_address);
+            let model_hash = bytearray_hash(@model_name);
+            self.emit_model_registered(model_name, namespace, contract_address, class_hash);
+            (model_hash, contract_address)
         }
     }
 
@@ -280,20 +286,16 @@ pub mod resource_component {
 
         fn set_new_model(
             ref self: ComponentState<TContractState>,
-            namespace: ByteArray,
             namespace_hash: felt252,
-            model_name: ByteArray,
+            model_hash_name: felt252,
             contract_address: ContractAddress,
             class_hash: ClassHash,
         ) {
-            let model_hash = bytearray_hash(@model_name);
-            let selector = poseidon_hash_span([namespace_hash, model_hash].span());
-
-            self.model_hashes.write(selector, model_hash);
+            let selector = poseidon_hash_span([namespace_hash, model_hash_name].span());
+            self.model_hashes.write(selector, model_hash_name);
             self.model_namespace_hashes.write(selector, namespace_hash);
             self.model_contract_addresses.write(selector, contract_address);
             self.resource_types.write(selector, Resource::Model);
-            self.emit_model_registered(model_name, namespace, contract_address, class_hash);
         }
     }
 
