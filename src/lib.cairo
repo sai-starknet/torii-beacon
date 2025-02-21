@@ -17,12 +17,14 @@ pub mod errors;
 pub mod starknet;
 
 pub mod interfaces {
+    pub use super::beacon::{IBeaconDispatcher, IBeaconDispatcherTrait};
     pub use super::owners::{IBeaconOwnersDispatcher, IBeaconOwnersDispatcherTrait};
     pub use super::writers::{IBeaconWritersDispatcher, IBeaconWritersDispatcherTrait};
     pub use super::resource::component::{IBeaconResourceDispatcher, IBeaconResourceDispatcherTrait};
 }
 pub mod beacon;
 
+pub mod models;
 
 #[cfg(test)]
 mod tests {
