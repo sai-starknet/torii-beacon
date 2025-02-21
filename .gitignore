@@ -1,0 +1,5 @@
+target/
+.env*
+manifests/*/base/
+node_modules/
+database/
