@@ -71,12 +71,12 @@ const getContractPaths = (targetPath) => {
   return contracts;
 };
 
-const declareContract = async (provider, account, name, files) => {
+const declareContract = async (account, name, files) => {
   const contract = loadJson(files.contract);
   const classHash = hash.computeContractClassHash(contract);
   console.log(`\n\nClass hash for ${name}: ${classHash}`);
   try {
-    await provider.getClassByHash(classHash);
+    await account.getClassByHash(classHash);
     console.log(`\t${name} already declared with classHash\n\t\t${classHash}`);
   } catch {
     try {
@@ -86,7 +86,7 @@ const declareContract = async (provider, account, name, files) => {
         { contract, casm },
         { version: 3 }
       );
-      await provider.waitForTransaction(declareResponse.transaction_hash);
+      await account.waitForTransaction(declareResponse.transaction_hash);
       console.log(
         `\t${name} declared with classHash\n\t\t${declareResponse.class_hash}`
       );
@@ -98,17 +98,33 @@ const declareContract = async (provider, account, name, files) => {
   return classHash;
 };
 
-const declareContracts = async (provider, account, contracts) => {
+const declareContracts = async (account, contracts) => {
   let classHashes = {};
   for (const contractName in contracts) {
     classHashes[contractName] = await declareContract(
-      provider,
       account,
       contractName,
       contracts[contractName]
     );
   }
   return classHashes;
+};
+
+const deployZeroContract = async (account, classHash) => {
+  try {
+    const deployResponse = await account.deployContract(
+      {
+        classHash,
+        salt: "0x0",
+        unique: false,
+      },
+      { version: 3 }
+    );
+    await account.waitForTransaction(deployResponse.transaction_hash);
+    console.log(`Deployed contract with classHash: ${classHash}`);
+  } catch {
+    console.log(`Failed to deploy contract with classHash: ${classHash}`);
+  }
 };
 const [provider, account] = await getAccount(
   process.env.STARKNET_RPC_URL,
@@ -117,5 +133,12 @@ const [provider, account] = await getAccount(
 );
 
 const contracts = getContractPaths(targetPath);
-let contractHashes = await declareContracts(provider, account, contracts);
-console.log(contractHashes);
+let contractHashes = await declareContracts(account, contracts);
+deployZeroContract(account, contractHashes.dojo_beacon_example_m_Moves);
+for (const contractName in contractHashes) {
+  if (contractName.includes("_m_")) {
+    await deployZeroContract(account, contractHashes[contractName]);
+  }
+}
+
+const makeManifest = () => {};

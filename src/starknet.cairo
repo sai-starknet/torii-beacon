@@ -26,29 +26,29 @@ pub fn calculate_contract_address(
     class_hash: ClassHash,
     calldata: Span<felt252>,
 ) -> ContractAddress {
-    pedersen_hash_fixed_array(
+    pedersen_fixed_array_hash(
         [
             CONTRACT_ADDRESS_PREFIX, deployer_address.into(), salt, class_hash.into(),
-            pedersen_hash_span(calldata),
+            pedersen_array_hash(calldata),
         ],
     )
         .try_into()
         .unwrap()
 }
 
-fn pedersen_hash_span(mut span: Span<felt252>) -> felt252 {
+fn pedersen_array_hash(mut array: Span<felt252>) -> felt252 {
     let mut state = PedersenTrait::new(0);
-    let len = span.len().into();
+    let len = array.len().into();
     loop {
-        match span.pop_front() {
+        match array.pop_front() {
             Option::Some(value) => { state = state.update(*value); },
             Option::None => { break state.update(len).finalize(); },
         }
     }
 }
 
-fn pedersen_hash_fixed_array<const SIZE: usize, impl ToSpan: ToSpanTrait<[felt252; SIZE], felt252>>(
+fn pedersen_fixed_array_hash<const SIZE: usize, impl ToSpan: ToSpanTrait<[felt252; SIZE], felt252>>(
     array: [felt252; SIZE],
 ) -> felt252 {
-    pedersen_hash_span(ToSpan::span(@array))
+    pedersen_array_hash(ToSpan::span(@array))
 }

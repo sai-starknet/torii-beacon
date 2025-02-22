@@ -36,9 +36,9 @@ pub mod actions {
     #[storage]
     struct Storage {
         #[substorage(v0)]
-        resource: resource_component::Storage,
-        positions: Map::<ContractAddress, Vec2>,
-        moves: Map::<ContractAddress, Moves>,
+        pub resource: resource_component::Storage,
+        pub positions: Map::<ContractAddress, Vec2>,
+        pub moves: Map::<ContractAddress, Moves>,
     }
 
     #[constructor]
