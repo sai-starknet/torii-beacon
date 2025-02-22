@@ -1,7 +1,9 @@
 use core::{pedersen::PedersenTrait, hash::HashStateTrait};
 use core::poseidon::poseidon_hash_span;
 use core::num::traits::Zero;
-use starknet::{Store, SyscallResult, storage_access::StorageBaseAddress};
+use starknet::{
+    Store, SyscallResult, storage_access::{StorageBaseAddress, storage_base_address_from_felt252},
+};
 
 fn sn_storage_from_span(selectors: Span<felt252>) -> felt252 {
     assert(selectors.len().is_non_zero(), 'Selectors cannot be empty');
@@ -30,7 +32,9 @@ impl SpanStorage<T, +starknet::Store<T>> of starknet::Store<Span<T>> {
         let len: u32 = Store::read(address_domain, base)?;
         let base_felt252: felt252 = base.into();
         for i in 0..len {
-            let address = poseidon_hash_span([base_felt252, i.into()].span());
+            let address = storage_base_address_from_felt252(
+                poseidon_hash_span([base_felt252, i.into()].span()),
+            );
         }
     }
 }
