@@ -15,8 +15,7 @@ pub use resource::resource_component;
 
 pub mod errors;
 pub mod starknet;
-pub mod storage;
-
+// pub mod storage;
 
 pub mod interfaces {
     pub use super::beacon::{IBeaconDispatcher, IBeaconDispatcherTrait};
