@@ -8,6 +8,7 @@ pub mod resource {
     pub mod model;
     pub mod component;
     pub mod resource;
+    pub mod emitter;
     pub use component::resource_component;
     pub use resource::{DojoResource, Resource};
 }
