@@ -48,10 +48,7 @@ pub mod resource_component {
     use core::num::traits::Zero;
 
     use starknet::{get_caller_address, ClassHash, ContractAddress};
-    use starknet::storage::{
-        Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess,
-        StoragePointerWriteAccess,
-    };
+    use starknet::storage::{Map, StorageMapReadAccess, StorageMapWriteAccess};
 
     use dojo::world::world::{
         NamespaceRegistered, ModelRegistered, StoreSetRecord, StoreUpdateRecord, StoreUpdateMember,

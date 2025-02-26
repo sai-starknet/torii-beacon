@@ -1,12 +1,8 @@
-use starknet::{
-    ContractAddress, ClassHash, SyscallResultTrait,
-    syscalls::{deploy_syscall, get_class_hash_at_syscall, call_contract_syscall},
-    class_hash::class_hash_const, contract_address::contract_address_const,
-};
+use starknet::{ContractAddress, ClassHash, contract_address::contract_address_const};
 
 use dojo::meta::{IDeployedResourceDispatcher, IDeployedResourceDispatcherTrait};
 
-use dojo_beacon::starknet::calculate_contract_address;
+use dojo_beacon::utils::calculate_contract_address;
 
 // pub fn deploy_model_contract(class_hash: ClassHash) -> ContractAddress {
 //     let contract_address = calculate_contract_address(

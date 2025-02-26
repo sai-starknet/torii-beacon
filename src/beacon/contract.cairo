@@ -1,68 +1,11 @@
-#[derive(Drop, Serde)]
-struct IdKeysValues {
-    id: felt252,
-    keys: Span<felt252>,
-    values: Span<felt252>,
-}
-
-#[derive(Drop, Serde)]
-struct IdValues {
-    id: felt252,
-    values: Span<felt252>,
-}
-
-#[derive(Drop, Serde)]
-struct IdValuesArray {
-    id: felt252,
-    values: Array<Span<felt252>>,
-}
-#[starknet::interface]
-pub trait IBeacon<TContractState> {
-    fn set_model(
-        ref self: TContractState,
-        selector: felt252,
-        entity_id: felt252,
-        keys: Span<felt252>,
-        values: Span<felt252>,
-    );
-    fn set_models(ref self: TContractState, selector: felt252, models: Array<IdKeysValues>);
-    fn update_model(
-        ref self: TContractState, selector: felt252, entity_id: felt252, values: Span<felt252>,
-    );
-    fn update_models(ref self: TContractState, selector: felt252, models: Array<IdValues>);
-    fn update_member(
-        ref self: TContractState,
-        selector: felt252,
-        entity_id: felt252,
-        member_selector: felt252,
-        values: Span<felt252>,
-    );
-    fn update_members(
-        ref self: TContractState, selector: felt252, entity_id: felt252, members: Array<IdValues>,
-    );
-    fn update_models_member(
-        ref self: TContractState,
-        selector: felt252,
-        member_selector: felt252,
-        models: Array<IdValues>,
-    );
-
-    fn update_models_members(
-        ref self: TContractState,
-        selector: felt252,
-        member_selectors: Span<felt252>,
-        models: Array<IdValuesArray>,
-    );
-}
-
 #[starknet::contract]
 mod beacon {
     use dojo_beacon::{
         owners_component, resource_component, resource_component::{BeaconEvents, ResourceWriter},
         writers_component,
     };
+    use dojo_beacon::beacon::{IBeacon, IdKeysValues, IdValues, IdValuesArray};
 
-    use super::{IBeacon, IdKeysValues, IdValues, IdValuesArray};
     component!(path: owners_component, storage: owners, event: OwnersEvents);
     component!(path: writers_component, storage: writers, event: WritersEvents);
     component!(path: resource_component, storage: resource, event: ResourceEvents);

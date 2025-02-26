@@ -3,7 +3,7 @@ cairo-version = "=2.9.2"
 edition = "2024_07"
 description = "The Dojo Beacon fort interfacing with Torii"
 name = "dojo_beacon"
-version = "0.1.2"
+version = "0.1.3"
 experimental-features = ["negative_impls"]
 
 [dependencies]
