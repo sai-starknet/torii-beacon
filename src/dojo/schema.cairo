@@ -24,7 +24,7 @@ trait Schema<S> {
     fn members() -> Span<felt252>;
 }
 
-trait SchemaGenerated<S> {
+pub trait SchemaGenerated<S> {
     fn serialize_values_to_array(self: @S) -> Array<Span<felt252>>;
     fn members() -> Span<felt252>;
 }
