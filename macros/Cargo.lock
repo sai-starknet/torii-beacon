@@ -902,6 +902,7 @@ dependencies = [
  "bigdecimal",
  "cairo-lang-defs",
  "cairo-lang-diagnostics",
+ "cairo-lang-filesystem",
  "cairo-lang-macro",
  "cairo-lang-parser",
  "cairo-lang-syntax",
@@ -909,6 +910,7 @@ dependencies = [
  "dojo-lang",
  "indoc",
  "serde",
+ "smol_str",
  "starknet",
 ]
 
