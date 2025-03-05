@@ -1,4 +1,3 @@
-use super::{derive_token_stream_to_type, Item};
 use cairo_lang_macro::{derive_macro, ProcMacroResult, TokenStream};
 use cairo_lang_parser::printer::print_tree;
 use cairo_lang_parser::utils::SimpleParserDatabase;
@@ -8,7 +7,7 @@ use cairo_lang_syntax::node::TypedSyntaxNode;
 pub fn print_all(token_stream: TokenStream) -> ProcMacroResult {
     let db = SimpleParserDatabase::default();
     let (parsed, _diag) = db.parse_virtual_with_diagnostics(token_stream);
-    println!("{}", print_tree(&db, &parsed, true, true));
+    println!("{}", print_tree(&db, &parsed, true, false));
 
     ProcMacroResult::new(TokenStream::new("".to_string()))
 }

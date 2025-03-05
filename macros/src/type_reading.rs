@@ -6,7 +6,7 @@ use cairo_lang_parser::utils::SimpleParserDatabase;
 use cairo_lang_parser::ParserDiagnostic;
 use cairo_lang_syntax::attribute::structured::{AttributeArgVariant, AttributeStructurize};
 use cairo_lang_syntax::node::db::SyntaxGroup;
-use cairo_lang_syntax::node::element_list::ElementList;
+use cairo_lang_syntax::node::element_list::ElementList as AstElementList;
 use cairo_lang_syntax::node::green::GreenNode;
 use cairo_lang_syntax::node::helpers::QueryAttrs;
 use cairo_lang_syntax::node::kind::SyntaxKind;
@@ -15,10 +15,17 @@ use smol_str::SmolStr;
 use std::ops::Deref;
 use std::sync::Arc;
 
-pub trait DbAstTrait<'a> {
-    fn db(&self) -> &dyn SyntaxGroup;
+pub trait NewDbSyntaxNode<'a> {
+    type TSN: TypedSyntaxNode;
+    fn new(db: &'a dyn SyntaxGroup, node: Self::TSN) -> Self;
+}
 
+pub trait DbTypedSyntaxNode<'a> {
+    fn db(&self) -> &dyn SyntaxGroup;
     fn syntax_node(&self) -> SyntaxNode;
+    fn db_syntax_node(&self) -> (&dyn SyntaxGroup, SyntaxNode) {
+        (self.db(), self.syntax_node())
+    }
     fn offset(&self) -> TextOffset {
         self.syntax_node().offset()
     }
@@ -80,62 +87,36 @@ pub trait DbAstTrait<'a> {
     }
 }
 
-trait IntoDbAstTrait {
-    fn into_db_ast(&self) -> &dyn DbAstTrait;
+pub trait DynDbSyntaxNode<'a> {
+    fn to_dyn_db_ast_trait(&self) -> &dyn DbTypedSyntaxNode;
 }
 
-impl<T> DbAstTrait<'_> for T
+impl<'a, T> DbTypedSyntaxNode<'a> for T
 where
-    T: IntoDbAstTrait,
+    T: DynDbSyntaxNode<'a>,
 {
     fn db(&self) -> &dyn SyntaxGroup {
-        self.into_db_ast().db()
+        self.to_dyn_db_ast_trait().db()
     }
     fn syntax_node(&self) -> SyntaxNode {
-        self.into_db_ast().syntax_node()
+        self.to_dyn_db_ast_trait().syntax_node()
     }
 }
 
-pub trait TypedNode<T: TypedSyntaxNode> {
-    fn new(db: &dyn SyntaxGroup, node: T) -> Self;
-}
+//////////////////////////// Typed Syntax Nodes ////////////////////////////
 
-pub struct DbAst<D, T: TypedSyntaxNode> {
-    _db: D,
+pub struct DbAst<'a, T: TypedSyntaxNode> {
+    _db: &'a dyn SyntaxGroup,
     pub ast: T,
 }
 
-impl<D, T: TypedSyntaxNode> DbAst<D, T> {
-    pub fn new(db: D, ast: T) -> Self {
-        Self { _db: db, ast }
+impl<'a, TSN: TypedSyntaxNode> DbAst<'a, TSN> {
+    pub fn typed_syntax_node(&self) -> &TSN {
+        &self.ast
     }
 }
 
-pub type SyntaxFile<'a> = DbAst<&'a dyn SyntaxGroup, ast::SyntaxFile>;
-pub type Constant<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemConstant>;
-pub type Module<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemModule>;
-pub type Use<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemUse>;
-pub type FreeFunction<'a> = DbAst<&'a dyn SyntaxGroup, ast::FunctionWithBody>;
-pub type ExternFunction<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemExternFunction>;
-pub type ExternType<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemExternType>;
-pub type Trait<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemTrait>;
-pub type Impl<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemImpl>;
-pub type ImplAlias<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemImplAlias>;
-pub type Struct<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemStruct>;
-pub type Enum<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemEnum>;
-pub type TypeAlias<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemTypeAlias>;
-pub type InlineMacro<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemInlineMacro>;
-pub type HeaderDoc<'a> = DbAst<&'a dyn SyntaxGroup, ast::ItemHeaderDoc>;
-pub type Missing<'a> = DbAst<&'a dyn SyntaxGroup, ast::ModuleItemMissing>;
-
-pub type Member<'a> = DbAst<&'a dyn SyntaxGroup, ast::Member>;
-pub type GenericParamList<'a> = DbAst<&'a dyn SyntaxGroup, ast::OptionWrappedGenericParamList>;
-pub type GenericArgList<'a> = DbAst<&'a dyn SyntaxGroup, &'a ast::GenericArgList>;
-pub type Variant<'a> = DbAst<&'a dyn SyntaxGroup, ast::Variant>;
-pub type TyPath<'a> = DbAst<&'a dyn SyntaxGroup, ast::ExprPath>;
-pub type TyTuple<'a> = DbAst<&'a dyn SyntaxGroup, ast::ExprList>;
-
-impl<'a, T: TypedSyntaxNode> DbAstTrait<'_> for DbAst<&dyn SyntaxGroup, T> {
+impl<'a, T: TypedSyntaxNode> DbTypedSyntaxNode<'a> for DbAst<'a, T> {
     fn db(&self) -> &dyn SyntaxGroup {
         self._db
     }
@@ -143,6 +124,67 @@ impl<'a, T: TypedSyntaxNode> DbAstTrait<'_> for DbAst<&dyn SyntaxGroup, T> {
         self.ast.as_syntax_node()
     }
 }
+
+impl<'a, TSN: TypedSyntaxNode> NewDbSyntaxNode<'a> for DbAst<'a, TSN> {
+    type TSN = TSN;
+    fn new(db: &'a dyn SyntaxGroup, node: Self::TSN) -> Self {
+        Self { _db: db, ast: node }
+    }
+}
+
+pub type SyntaxFile<'a> = DbAst<'a, ast::SyntaxFile>;
+
+pub type Constant<'a> = DbAst<'a, ast::ItemConstant>;
+pub type Module<'a> = DbAst<'a, ast::ItemModule>;
+pub type Use<'a> = DbAst<'a, ast::ItemUse>;
+pub type FreeFunction<'a> = DbAst<'a, ast::FunctionWithBody>;
+pub type ExternFunction<'a> = DbAst<'a, ast::ItemExternFunction>;
+pub type ExternType<'a> = DbAst<'a, ast::ItemExternType>;
+pub type Trait<'a> = DbAst<'a, ast::ItemTrait>;
+pub type Impl<'a> = DbAst<'a, ast::ItemImpl>;
+pub type ImplAlias<'a> = DbAst<'a, ast::ItemImplAlias>;
+pub type Struct<'a> = DbAst<'a, ast::ItemStruct>;
+pub type Enum<'a> = DbAst<'a, ast::ItemEnum>;
+pub type TypeAlias<'a> = DbAst<'a, ast::ItemTypeAlias>;
+pub type InlineMacro<'a> = DbAst<'a, ast::ItemInlineMacro>;
+pub type ItemHeaderDoc<'a> = DbAst<'a, ast::ItemHeaderDoc>;
+pub type ItemMissing<'a> = DbAst<'a, ast::ModuleItemMissing>;
+
+pub type Member<'a> = DbAst<'a, ast::Member>;
+pub type GenericParamList<'a> = DbAst<'a, ast::OptionWrappedGenericParamList>;
+pub type GenericArgList<'a> = DbAst<'a, &'a ast::GenericArgList>;
+pub type Variant<'a> = DbAst<'a, ast::Variant>;
+
+// pub type TyPath<'a> = DbAst<'a, ast::ExprPath>;
+// pub type TyTuple<'a> = DbAst<'a, ast::ExprList>;
+
+pub type Path<'a> = DbAst<'a, ast::ExprPath>;
+pub type Literal<'a> = DbAst<'a, ast::TerminalLiteralNumber>;
+pub type ShortString<'a> = DbAst<'a, ast::TerminalShortString>;
+pub type ExprString<'a> = DbAst<'a, ast::TerminalString>;
+pub type False<'a> = DbAst<'a, ast::TerminalFalse>;
+pub type True<'a> = DbAst<'a, ast::TerminalTrue>;
+pub type Parenthesized<'a> = DbAst<'a, ast::ExprParenthesized>;
+pub type Unary<'a> = DbAst<'a, ast::ExprUnary>;
+pub type Binary<'a> = DbAst<'a, ast::ExprBinary>;
+pub type Tuple<'a> = DbAst<'a, ast::ExprList>;
+pub type FunctionCall<'a> = DbAst<'a, ast::ExprFunctionCall>;
+pub type StructCtorCall<'a> = DbAst<'a, ast::ExprStructCtorCall>;
+pub type Block<'a> = DbAst<'a, ast::ExprBlock>;
+pub type Match<'a> = DbAst<'a, ast::ExprMatch>;
+pub type If<'a> = DbAst<'a, ast::ExprIf>;
+pub type Loop<'a> = DbAst<'a, ast::ExprLoop>;
+pub type While<'a> = DbAst<'a, ast::ExprWhile>;
+pub type For<'a> = DbAst<'a, ast::ExprFor>;
+pub type Closure<'a> = DbAst<'a, ast::ExprClosure>;
+pub type ErrorPropagate<'a> = DbAst<'a, ast::ExprErrorPropagate>;
+pub type FieldInitShorthand<'a> = DbAst<'a, ast::ExprFieldInitShorthand>;
+pub type Indexed<'a> = DbAst<'a, ast::ExprIndexed>;
+pub type ExprInlineMacro<'a> = DbAst<'a, ast::ExprInlineMacro>;
+pub type FixedSizeArray<'a> = DbAst<'a, ast::ExprFixedSizeArray>;
+pub type ExprMissing<'a> = DbAst<'a, ast::ExprMissing>;
+
+////////////////// Items //////////////////
 
 pub enum Item<'a> {
     Constant(Constant<'a>),
@@ -158,36 +200,28 @@ pub enum Item<'a> {
     Enum(Enum<'a>),
     TypeAlias(TypeAlias<'a>),
     InlineMacro(InlineMacro<'a>),
-    HeaderDoc(HeaderDoc<'a>),
-    Missing(Missing<'a>),
+    HeaderDoc(ItemHeaderDoc<'a>),
+    Missing(ItemMissing<'a>),
 }
 
-impl<'a> Item<'a> {
-    pub fn new<T>(db: &dyn SyntaxGroup, module_item: ast::ModuleItem) -> Item {
-        match module_item {
-            ast::ModuleItem::Constant(item) => Item::Constant(Constant::new(db, item)),
-            ast::ModuleItem::Module(item) => Item::Module(Module::new(db, item)),
-            ast::ModuleItem::Use(item) => Item::Use(Use::new(db, item)),
-            ast::ModuleItem::FreeFunction(item) => Item::FreeFunction(FreeFunction::new(db, item)),
-            ast::ModuleItem::ExternFunction(item) => {
-                Item::ExternFunction(ExternFunction::new(db, item))
-            }
-            ast::ModuleItem::ExternType(item) => Item::ExternType(ExternType::new(db, item)),
-            ast::ModuleItem::Trait(item) => Item::Trait(Trait::new(db, item)),
-            ast::ModuleItem::Impl(item) => Item::Impl(Impl::new(db, item)),
-            ast::ModuleItem::ImplAlias(item) => Item::ImplAlias(ImplAlias::new(db, item)),
-            ast::ModuleItem::Struct(item) => Item::Struct(Struct::new(db, item)),
-            ast::ModuleItem::Enum(item) => Item::Enum(Enum::new(db, item)),
-            ast::ModuleItem::TypeAlias(item) => Item::TypeAlias(TypeAlias::new(db, item)),
-            ast::ModuleItem::InlineMacro(item) => Item::InlineMacro(InlineMacro::new(db, item)),
-            ast::ModuleItem::HeaderDoc(item) => Item::HeaderDoc(HeaderDoc::new(db, item)),
-            ast::ModuleItem::Missing(item) => Item::Missing(Missing::new(db, item)),
-        }
-    }
+pub fn element_list_to_vec<
+    'a,
+    TSN: TypedSyntaxNode + Clone,
+    T: NewDbSyntaxNode<'a, TSN = TSN>,
+    S: Deref<Target = AstElementList<TSN, STEP>>,
+    const STEP: usize,
+>(
+    db: &'a dyn SyntaxGroup,
+    node: S,
+) -> Vec<T> {
+    node.elements(db)
+        .iter()
+        .map(|e: &TSN| T::new(db, e.clone()))
+        .collect()
 }
 
-impl<'a> IntoDbAstTrait for Item<'a> {
-    fn into_db_ast(&self) -> &dyn DbAstTrait {
+impl<'a> DynDbSyntaxNode<'a> for Item<'a> {
+    fn to_dyn_db_ast_trait(&self) -> &dyn DbTypedSyntaxNode {
         match self {
             Item::Constant(item) => item,
             Item::Module(item) => item,
@@ -208,19 +242,140 @@ impl<'a> IntoDbAstTrait for Item<'a> {
     }
 }
 
-pub enum Ty<'a> {
-    Path(TyPath<'a>),
-    Tuple(TyTuple<'a>),
-}
-
-impl IntoDbAstTrait for Ty<'_> {
-    fn into_db_ast(&self) -> &dyn DbAstTrait {
-        match self {
-            Ty::Path(item) => item,
-            Ty::Tuple(item) => item,
+impl<'a> NewDbSyntaxNode<'a> for Item<'a> {
+    type TSN = ast::ModuleItem;
+    fn new(db: &'a dyn SyntaxGroup, node: ast::ModuleItem) -> Self {
+        match node {
+            ast::ModuleItem::Constant(item) => Item::Constant(Constant::new(db, item)),
+            ast::ModuleItem::Module(item) => Item::Module(Module::new(db, item)),
+            ast::ModuleItem::Use(item) => Item::Use(Use::new(db, item)),
+            ast::ModuleItem::FreeFunction(item) => Item::FreeFunction(FreeFunction::new(db, item)),
+            ast::ModuleItem::ExternFunction(item) => {
+                Item::ExternFunction(ExternFunction::new(db, item))
+            }
+            ast::ModuleItem::ExternType(item) => Item::ExternType(ExternType::new(db, item)),
+            ast::ModuleItem::Trait(item) => Item::Trait(Trait::new(db, item)),
+            ast::ModuleItem::Impl(item) => Item::Impl(Impl::new(db, item)),
+            ast::ModuleItem::ImplAlias(item) => Item::ImplAlias(ImplAlias::new(db, item)),
+            ast::ModuleItem::Struct(item) => Item::Struct(Struct::new(db, item)),
+            ast::ModuleItem::Enum(item) => Item::Enum(Enum::new(db, item)),
+            ast::ModuleItem::TypeAlias(item) => Item::TypeAlias(TypeAlias::new(db, item)),
+            ast::ModuleItem::InlineMacro(item) => Item::InlineMacro(InlineMacro::new(db, item)),
+            ast::ModuleItem::HeaderDoc(item) => Item::HeaderDoc(ItemHeaderDoc::new(db, item)),
+            ast::ModuleItem::Missing(item) => Item::Missing(ItemMissing::new(db, item)),
         }
     }
 }
+
+////////////////// Expressions //////////////////
+
+pub enum Expression<'a> {
+    Path(Path<'a>),
+    Literal(Literal<'a>),
+    ShortString(ShortString<'a>),
+    String(ExprString<'a>),
+    False(False<'a>),
+    True(True<'a>),
+    Parenthesized(Parenthesized<'a>),
+    Unary(Unary<'a>),
+    Binary(Binary<'a>),
+    Tuple(Tuple<'a>),
+    FunctionCall(FunctionCall<'a>),
+    StructCtorCall(StructCtorCall<'a>),
+    Block(Block<'a>),
+    Match(Match<'a>),
+    If(If<'a>),
+    Loop(Loop<'a>),
+    While(While<'a>),
+    For(For<'a>),
+    Closure(Closure<'a>),
+    ErrorPropagate(ErrorPropagate<'a>),
+    FieldInitShorthand(FieldInitShorthand<'a>),
+    Indexed(Indexed<'a>),
+    InlineMacro(ExprInlineMacro<'a>),
+    FixedSizeArray(FixedSizeArray<'a>),
+    Missing(ExprMissing<'a>),
+}
+
+impl<'a> DynDbSyntaxNode<'a> for Expression<'a> {
+    fn to_dyn_db_ast_trait(&self) -> &dyn DbTypedSyntaxNode {
+        match self {
+            Expression::Path(expr) => expr,
+            Expression::Literal(expr) => expr,
+            Expression::ShortString(expr) => expr,
+            Expression::String(expr) => expr,
+            Expression::False(expr) => expr,
+            Expression::True(expr) => expr,
+            Expression::Parenthesized(expr) => expr,
+            Expression::Unary(expr) => expr,
+            Expression::Binary(expr) => expr,
+            Expression::Tuple(expr) => expr,
+            Expression::FunctionCall(expr) => expr,
+            Expression::StructCtorCall(expr) => expr,
+            Expression::Block(expr) => expr,
+            Expression::Match(expr) => expr,
+            Expression::If(expr) => expr,
+            Expression::Loop(expr) => expr,
+            Expression::While(expr) => expr,
+            Expression::For(expr) => expr,
+            Expression::Closure(expr) => expr,
+            Expression::ErrorPropagate(expr) => expr,
+            Expression::FieldInitShorthand(expr) => expr,
+            Expression::Indexed(expr) => expr,
+            Expression::InlineMacro(expr) => expr,
+            Expression::FixedSizeArray(expr) => expr,
+            Expression::Missing(expr) => expr,
+        }
+    }
+}
+
+impl<'a> NewDbSyntaxNode<'a> for Expression<'a> {
+    type TSN = ast::Expr;
+    fn new(db: &'a dyn SyntaxGroup, node: ast::Expr) -> Expression<'a> {
+        match node {
+            ast::Expr::Path(expr) => Expression::Path(Path::new(db, expr)),
+            ast::Expr::Literal(expr) => Expression::Literal(Literal::new(db, expr)),
+            ast::Expr::ShortString(expr) => Expression::ShortString(ShortString::new(db, expr)),
+            ast::Expr::String(expr) => Expression::String(ExprString::new(db, expr)),
+            ast::Expr::False(expr) => Expression::False(False::new(db, expr)),
+            ast::Expr::True(expr) => Expression::True(True::new(db, expr)),
+            ast::Expr::Parenthesized(expr) => {
+                Expression::Parenthesized(Parenthesized::new(db, expr))
+            }
+            ast::Expr::Unary(expr) => Expression::Unary(Unary::new(db, expr)),
+            ast::Expr::Binary(expr) => Expression::Binary(Binary::new(db, expr)),
+            ast::Expr::Tuple(expr) => Expression::Tuple(Tuple::new(db, expr.expressions(db))),
+            ast::Expr::FunctionCall(expr) => Expression::FunctionCall(FunctionCall::new(db, expr)),
+            ast::Expr::StructCtorCall(expr) => {
+                Expression::StructCtorCall(StructCtorCall::new(db, expr))
+            }
+            ast::Expr::Block(expr) => Expression::Block(Block::new(db, expr)),
+            ast::Expr::Match(expr) => Expression::Match(Match::new(db, expr)),
+            ast::Expr::If(expr) => Expression::If(If::new(db, expr)),
+            ast::Expr::Loop(expr) => Expression::Loop(Loop::new(db, expr)),
+            ast::Expr::While(expr) => Expression::While(While::new(db, expr)),
+            ast::Expr::For(expr) => Expression::For(For::new(db, expr)),
+            ast::Expr::Closure(expr) => Expression::Closure(Closure::new(db, expr)),
+            ast::Expr::ErrorPropagate(expr) => {
+                Expression::ErrorPropagate(ErrorPropagate::new(db, expr))
+            }
+            ast::Expr::FieldInitShorthand(expr) => {
+                Expression::FieldInitShorthand(FieldInitShorthand::new(db, expr))
+            }
+            ast::Expr::Indexed(expr) => Expression::Indexed(Indexed::new(db, expr)),
+            ast::Expr::InlineMacro(expr) => Expression::InlineMacro(ExprInlineMacro::new(db, expr)),
+            ast::Expr::FixedSizeArray(expr) => {
+                Expression::FixedSizeArray(FixedSizeArray::new(db, expr))
+            }
+            ast::Expr::Missing(expr) => Expression::Missing(ExprMissing::new(db, expr)),
+        }
+    }
+}
+
+// pub enum Ty<'a> {
+//     Path(TyPath<'a>),
+//     Tuple(TyTuple<'a>),
+// }
 
 #[derive(Clone, Debug)]
 pub enum Visibility {
@@ -254,6 +409,15 @@ pub fn derive_attrs(db: &dyn SyntaxGroup, attr_list: ast::AttributeList) -> Vec<
         .collect::<Vec<_>>()
 }
 
+pub fn parse_token_stream_to_syntax_file(
+    token_stream: TokenStream,
+) -> (SyntaxFile<'static>, Diagnostics<ParserDiagnostic>) {
+    let db = Box::leak(Box::new(SimpleParserDatabase::default()));
+    let (parsed, diagnostics) = db.parse_virtual_with_diagnostics(token_stream);
+    let syntax_file = ast::SyntaxFile::from_syntax_node(db, parsed);
+    (SyntaxFile::new(db, syntax_file), diagnostics)
+}
+
 pub fn derive_token_stream_to_type(
     token_stream: TokenStream,
 ) -> (Item<'static>, Diagnostics<ParserDiagnostic>) {
@@ -266,32 +430,29 @@ pub fn derive_token_stream_to_type(
     (Item::new(db, module_item), diagnostics)
 }
 
-pub fn ty(db: &dyn SyntaxGroup, expr: ast::Expr) -> Ty {
-    match expr {
-        ast::Expr::Path(ast) => Ty::Path(TyPath::new(db, ast)),
-        ast::Expr::Tuple(tuple) => Ty::Tuple(TyTuple::new(db, tuple.expressions(db))),
-        _ => panic!("Unsupported type"),
-    }
-}
-
-pub fn element_list_to_vec<
-    'a,
-    T: TypedSyntaxNode + Clone + 'static,
-    S: Deref<Target = ElementList<T, STEP>>,
-    const STEP: usize,
->(
-    db: &'a dyn SyntaxGroup,
-    node: S,
-) -> Vec<DbAst<&'a dyn SyntaxGroup, T>> {
-    node.elements(db)
-        .iter()
-        .map(|e: &T| DbAst::new(db, e.clone()))
-        .collect()
-}
+// pub fn ty(db: &dyn SyntaxGroup, expr: ast::Expr) -> Ty {
+//     match expr {
+//         ast::Expr::Path(ast) => Ty::Path(TyPath::new(db, ast)),
+//         ast::Expr::Tuple(tuple) => Ty::Tuple(TyTuple::new(db, tuple.expressions(db))),
+//         _ => panic!("Unsupported type"),
+//     }
+// }
 
 impl SyntaxFile<'_> {
     pub fn items(&self) -> Vec<Item> {
         element_list_to_vec(self.db(), self.ast.items(self.db()))
+    }
+    pub fn item(&self) -> Item {
+        Item::new(
+            self.db(),
+            self.ast
+                .items(self.db())
+                .elements(self.db())
+                .iter()
+                .next()
+                .unwrap()
+                .clone(),
+        )
     }
 }
 
@@ -309,7 +470,8 @@ impl Struct<'_> {
         GenericParamList::new(self.db(), self.ast.generic_params(self.db()))
     }
     pub fn members(&self) -> Vec<Member> {
-        element_list_to_vec(self.db(), self.ast.members(self.db()))
+        let list = self.ast.members(self.db());
+        element_list_to_vec(self.db(), list)
     }
 }
 
@@ -323,8 +485,8 @@ impl Member<'_> {
     pub fn name(&self) -> String {
         self.ast.name(self.db()).text(self.db()).to_string()
     }
-    pub fn ty(&self) -> Ty {
-        ty(self.db(), self.ast.type_clause(self.db()).ty(self.db()))
+    pub fn ty(&self) -> Expression {
+        Expression::new(self.db(), self.ast.type_clause(self.db()).ty(self.db()))
     }
 }
 

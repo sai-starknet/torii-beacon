@@ -1,8 +1,7 @@
-use crate::type_reading::DbAstTrait;
-use crate::{derive_token_stream_to_type, Item};
-use cairo_lang_defs::patcher::{PatchBuilder, RewriteNode};
+use crate::type_reading::DbTypedSyntaxNode;
+use crate::{parse_token_stream_to_syntax_file, Item};
+use cairo_lang_defs::patcher::RewriteNode;
 use cairo_lang_macro::{derive_macro, ProcMacroResult, TokenStream};
-use cairo_lang_parser::utils::SimpleParserDatabase;
 use cairo_lang_utils::unordered_hash_map::UnorderedHashMap;
 use starknet::core::utils::get_selector_from_name;
 pub const SCHEMA_DERIVE_MACRO: &str = "Schema";
@@ -10,10 +9,9 @@ const SCHEMA_CODE_PATCH: &str = include_str!("./schema.patch.cairo");
 
 #[derive_macro]
 pub fn schema(token_stream: TokenStream) -> ProcMacroResult {
-    let (item, _) = derive_token_stream_to_type(token_stream);
-
+    let (file, _) = parse_token_stream_to_syntax_file(token_stream);
     let mut diagnostics = vec![];
-    let cairo_struct = match item {
+    let cairo_struct = match file.item() {
         Item::Struct(item) => item,
         _ => {
             diagnostics.push("Expected a struct".to_string());
@@ -24,8 +22,6 @@ pub fn schema(token_stream: TokenStream) -> ProcMacroResult {
     let mut member_selctors = vec![];
     for member in cairo_struct.members() {
         let member_name = member.name();
-        let member_type = member.ty().get_text();
-
         member_selctors.push(RewriteNode::Text(format!(
             "\t    {},\n",
             get_selector_from_name(&member_name)
@@ -55,8 +51,8 @@ pub fn schema(token_stream: TokenStream) -> ProcMacroResult {
             ),
         ]),
     );
-    cairo_struct.
-    let mut builder = PatchBuilder::new(cairo_struct.db(), cairo_struct.ast);
+    let mut builder = file.patch_builder();
+
     builder.add_modified(node);
 
     // let (code, code_mappings) = builder.build();
