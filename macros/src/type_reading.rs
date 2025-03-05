@@ -10,7 +10,7 @@ use cairo_lang_syntax::node::element_list::ElementList as AstElementList;
 use cairo_lang_syntax::node::green::GreenNode;
 use cairo_lang_syntax::node::helpers::QueryAttrs;
 use cairo_lang_syntax::node::kind::SyntaxKind;
-use cairo_lang_syntax::node::{ast, SyntaxNode, Terminal, TypedSyntaxNode};
+use cairo_lang_syntax::node::{ast, SyntaxNode, Terminal, TypedStablePtr, TypedSyntaxNode};
 use smol_str::SmolStr;
 use std::ops::Deref;
 use std::sync::Arc;
@@ -20,12 +20,9 @@ pub trait NewDbSyntaxNode<'a> {
     fn new(db: &'a dyn SyntaxGroup, node: Self::TSN) -> Self;
 }
 
-pub trait DbTypedSyntaxNode<'a> {
+pub trait DbSyntaxNode<'a> {
     fn db(&self) -> &dyn SyntaxGroup;
     fn syntax_node(&self) -> SyntaxNode;
-    fn db_syntax_node(&self) -> (&dyn SyntaxGroup, SyntaxNode) {
-        (self.db(), self.syntax_node())
-    }
     fn offset(&self) -> TextOffset {
         self.syntax_node().offset()
     }
@@ -87,11 +84,22 @@ pub trait DbTypedSyntaxNode<'a> {
     }
 }
 
-pub trait DynDbSyntaxNode<'a> {
-    fn to_dyn_db_ast_trait(&self) -> &dyn DbTypedSyntaxNode;
+pub trait DbTypedSyntaxNode<'a>: DbSyntaxNode<'a> {
+    type TSN: TypedSyntaxNode;
+    fn typed_syntax_node(&self) -> Self::TSN;
+    fn missing(&self) -> <Self::TSN as TypedSyntaxNode>::Green {
+        Self::TSN::missing(self.db())
+    }
+    fn stable_ptr(&self) -> <Self::TSN as TypedSyntaxNode>::StablePtr {
+        self.typed_syntax_node().stable_ptr()
+    }
 }
 
-impl<'a, T> DbTypedSyntaxNode<'a> for T
+pub trait DynDbSyntaxNode<'a> {
+    fn to_dyn_db_ast_trait(&self) -> &dyn DbSyntaxNode;
+}
+
+impl<'a, T> DbSyntaxNode<'a> for T
 where
     T: DynDbSyntaxNode<'a>,
 {
@@ -110,13 +118,20 @@ pub struct DbAst<'a, T: TypedSyntaxNode> {
     pub ast: T,
 }
 
-impl<'a, TSN: TypedSyntaxNode> DbAst<'a, TSN> {
-    pub fn typed_syntax_node(&self) -> &TSN {
-        &self.ast
+impl<'a, TSN: TypedSyntaxNode + Clone> DbAst<'a, TSN> {
+    pub fn typed_syntax_node(&self) -> TSN {
+        self.ast.clone()
     }
 }
 
-impl<'a, T: TypedSyntaxNode> DbTypedSyntaxNode<'a> for DbAst<'a, T> {
+impl<'a, TSN: TypedSyntaxNode + Clone> DbTypedSyntaxNode<'a> for DbAst<'a, TSN> {
+    type TSN = TSN;
+    fn typed_syntax_node(&self) -> Self::TSN {
+        self.ast.clone()
+    }
+}
+
+impl<'a, T: TypedSyntaxNode> DbSyntaxNode<'a> for DbAst<'a, T> {
     fn db(&self) -> &dyn SyntaxGroup {
         self._db
     }
@@ -221,7 +236,7 @@ pub fn element_list_to_vec<
 }
 
 impl<'a> DynDbSyntaxNode<'a> for Item<'a> {
-    fn to_dyn_db_ast_trait(&self) -> &dyn DbTypedSyntaxNode {
+    fn to_dyn_db_ast_trait(&self) -> &dyn DbSyntaxNode {
         match self {
             Item::Constant(item) => item,
             Item::Module(item) => item,
@@ -267,6 +282,13 @@ impl<'a> NewDbSyntaxNode<'a> for Item<'a> {
     }
 }
 
+impl<'a> DbTypedSyntaxNode<'a> for Item<'a> {
+    type TSN = ast::ModuleItem;
+    fn typed_syntax_node(&self) -> Self::TSN {
+        ast::ModuleItem::from_syntax_node(self.db(), self.syntax_node())
+    }
+}
+
 ////////////////// Expressions //////////////////
 
 pub enum Expression<'a> {
@@ -298,7 +320,7 @@ pub enum Expression<'a> {
 }
 
 impl<'a> DynDbSyntaxNode<'a> for Expression<'a> {
-    fn to_dyn_db_ast_trait(&self) -> &dyn DbTypedSyntaxNode {
+    fn to_dyn_db_ast_trait(&self) -> &dyn DbSyntaxNode {
         match self {
             Expression::Path(expr) => expr,
             Expression::Literal(expr) => expr,
@@ -372,10 +394,12 @@ impl<'a> NewDbSyntaxNode<'a> for Expression<'a> {
     }
 }
 
-// pub enum Ty<'a> {
-//     Path(TyPath<'a>),
-//     Tuple(TyTuple<'a>),
-// }
+impl<'a> DbTypedSyntaxNode<'a> for Expression<'a> {
+    type TSN = ast::Expr;
+    fn typed_syntax_node(&self) -> Self::TSN {
+        ast::Expr::from_syntax_node(self.db(), self.syntax_node())
+    }
+}
 
 #[derive(Clone, Debug)]
 pub enum Visibility {

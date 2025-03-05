@@ -1,4 +1,4 @@
-use crate::type_reading::DbTypedSyntaxNode;
+use crate::type_reading::{DbSyntaxNode, DbTypedSyntaxNode, NewDbSyntaxNode};
 use crate::{parse_token_stream_to_syntax_file, Item};
 use cairo_lang_defs::patcher::RewriteNode;
 use cairo_lang_macro::{derive_macro, ProcMacroResult, TokenStream};
