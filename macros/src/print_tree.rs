@@ -1,7 +1,6 @@
 use cairo_lang_macro::{derive_macro, ProcMacroResult, TokenStream};
 use cairo_lang_parser::printer::print_tree;
 use cairo_lang_parser::utils::SimpleParserDatabase;
-use cairo_lang_syntax::node::TypedSyntaxNode;
 
 #[derive_macro]
 pub fn print_all(token_stream: TokenStream) -> ProcMacroResult {

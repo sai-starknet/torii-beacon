@@ -11,9 +11,10 @@ dependencies = [
 
 [[package]]
 name = "dojo_beacon"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "dojo",
+ "dojo_beacon_macros",
 ]
 
 [[package]]
@@ -22,8 +23,13 @@ version = "0.1.0"
 dependencies = [
  "dojo",
  "dojo_beacon",
+ "dojo_beacon_macros",
  "dojo_cairo_test",
 ]
+
+[[package]]
+name = "dojo_beacon_macros"
+version = "0.1.0"
 
 [[package]]
 name = "dojo_cairo_test"
