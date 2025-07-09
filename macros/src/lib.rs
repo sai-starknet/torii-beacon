@@ -1,6 +1,6 @@
 // pub mod introspect;
 pub mod print_tree;
-// pub mod schema;
+pub mod schema;
 // pub mod type_reading;
 // pub use type_reading::{
 //     parse_token_stream_to_syntax_file, Binary, Block, Closure, Constant, DbAst, DbSyntaxNode,

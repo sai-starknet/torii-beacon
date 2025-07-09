@@ -1,7 +1,6 @@
-use crate::type_reading::{DbSyntaxNode, DbTypedSyntaxNode, NewDbSyntaxNode};
-use crate::{parse_token_stream_to_syntax_file, Item};
 use cairo_lang_defs::patcher::RewriteNode;
 use cairo_lang_macro::{derive_macro, ProcMacroResult, TokenStream};
+use cairo_lang_reader::{parse_token_stream_to_syntax_file, Item, SyntaxElementTrait};
 use cairo_lang_utils::unordered_hash_map::UnorderedHashMap;
 use starknet::core::utils::get_selector_from_name;
 pub const SCHEMA_DERIVE_MACRO: &str = "Schema";
