@@ -19,8 +19,7 @@ pub mod actions {
     use dojo_beacon_example::components::Moves;
 
     use dojo_beacon::resource_component;
-    use dojo_beacon::model::namespace;
-
+    use crate::systems::Beacon;
     use super::{IActions, next_position};
 
     const NAMESPACE_HASH: felt252 = bytearray_hash!("dojo_starter");
@@ -31,7 +30,7 @@ pub mod actions {
     impl Resource = resource_component::BeaconResource<ContractState>;
 
     impl Events = resource_component::BeaconEventsImpl<ContractState>;
-    impl Beacon = namespace::NamespaceBeacon<NAMESPACE_HASH, ContractState>;
+
 
     #[storage]
     struct Storage {

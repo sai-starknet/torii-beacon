@@ -27,14 +27,14 @@ pub mod beacon {
     pub mod components;
     pub mod interface;
     pub mod contract;
-    pub mod model;
     pub mod dojo;
     pub use components::{IdValues, IdValuesArray, IdKeysValues};
     pub use interface::{IBeacon, IBeaconDispatcher, IBeaconDispatcherTrait};
 }
 
-pub mod model {
-    pub mod namespace;
+pub mod emitter {
+    pub mod traits;
+    pub mod implementation;
 }
 
 pub mod dojo {

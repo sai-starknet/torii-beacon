@@ -1,19 +1,19 @@
 [package]
-cairo-version = "=2.9.2"
+cairo-version = "=2.10.1"
 edition = "2024_07"
 description = "The Dojo Beacon fort interfacing with Torii"
 name = "dojo_beacon"
-version = "0.1.3"
+version = "0.2.3"
 experimental-features = ["negative_impls"]
 
 [dependencies]
-starknet = "=2.9.2"
-dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.2.1" }
-dojo_beacon_macros = { path = "./macros" }
+starknet = "2.10.1"
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.5.1" }
+# dojo_beacon_macros = { path = "./macros" }
 
 [dev-dependencies]
-dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.2.1" }
-cairo_test = "=2.9.2"
+# dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.5.0" }
+cairo_test = "2.10.1"
 
 [lib]
 
