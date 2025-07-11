@@ -54,9 +54,8 @@ pub fn schema(token_stream: TokenStream) -> ProcMacroResult {
 
     builder.add_modified(node);
 
-    // let (code, code_mappings) = builder.build();
-    // println!("{}", code);
-    ProcMacroResult::new(TokenStream::new("".to_string()))
+    let (code, _) = builder.build();
+    ProcMacroResult::new(TokenStream::new(code.to_string()))
 }
 
 pub fn serialize_member_to_array(array_name: String, member_name: &String) -> RewriteNode {

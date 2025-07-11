@@ -4,6 +4,8 @@ pub use owners::owners_component;
 pub mod writers;
 pub use writers::writers_component;
 
+pub mod serialized_data;
+
 
 pub mod model;
 
@@ -11,19 +13,19 @@ pub mod model;
 pub mod errors;
 
 pub mod interfaces {
-    pub use super::beacon::{IBeaconDispatcher, IBeaconDispatcherTrait};
+    // pub use super::beacon::{IBeaconDispatcher, IBeaconDispatcherTrait};
     pub use super::owners::{IBeaconOwnersDispatcher, IBeaconOwnersDispatcherTrait};
     pub use super::writers::{IBeaconWritersDispatcher, IBeaconWritersDispatcherTrait};
 }
 
-pub mod beacon {
-    pub mod components;
-    pub mod interface;
-    pub mod contract;
-    pub mod dojo;
-    pub use components::{IdValues, IdValuesArray, IdKeysValues};
-    pub use interface::{IBeacon, IBeaconDispatcher, IBeaconDispatcherTrait};
-}
+// pub mod beacon {
+//     pub mod components;
+//     pub mod interface;
+//     pub mod contract;
+//     pub mod dojo;
+// pub use components::{IdValues, IdValuesArray, IdKeysValues};
+//     pub use interface::{IBeacon, IBeaconDispatcher, IBeaconDispatcherTrait};
+// }
 
 pub mod emitter {
     pub mod component;
@@ -34,17 +36,28 @@ pub mod emitter {
         DojoEventEmitter, HasComponent as HasEmitterComponent, ComponentState as EmitterState,
     };
 }
+pub use emitter::{emitter_component, DojoEventEmitter, HasEmitterComponent, EmitterState};
+
+pub mod registry {
+    mod component;
+    pub use component::registry_component;
+    pub use registry_component::{
+        RegistryTrait, HasComponent as HasRegistryComponent, ComponentState as RegistryState,
+    };
+}
+pub use registry::registry_component;
 
 pub mod dojo {
     pub mod schema;
     pub mod const_ns;
-    pub mod const_ns_model;
+    // pub mod const_ns_model;
     pub mod state_ns;
     pub mod arg_ns;
     pub mod traits;
     pub use const_ns::ConstNsBeaconEmitter;
     pub use state_ns::StateNsBeaconEmitter;
     pub use arg_ns::ArgNsBeaconEmitter;
+    pub use schema::Schema;
 }
 
 pub mod utils {
@@ -58,8 +71,8 @@ pub mod utils {
     pub use starknet::{calculate_contract_address, calculate_udc_contract_address};
 }
 
-pub mod micro_world;
-pub use micro_world::MicroEmitter;
+// pub mod micro_world;
+// pub use micro_world::MicroEmitter;
 
 #[cfg(test)]
 mod tests {

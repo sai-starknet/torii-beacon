@@ -12,9 +12,9 @@
 //     number: (@Array<T>, felt252, (TestStruct<T>, Span<T>)),
 // }
 
-#[derive(Drop, PrintAll)]
-struct Test3Struct<const N: usize> {
-    fixed: [bool; N],
+#[derive(Drop, Schema)]
+struct Test3Struct {
+    fixed: Span<felt252>,
 }
 // #[derive(Drop, PrintTree, PrintItem)]
 // enum Something {

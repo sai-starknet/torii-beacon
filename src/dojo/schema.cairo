@@ -1,25 +1,25 @@
-use dojo_beacon::beacon::IdValues;
+use crate::serialized_data::SelectorValue;
 
-trait Schema<S> {
+pub trait Schema<S> {
     fn serialize_values_to_array(self: @S) -> Array<Span<felt252>>;
     fn serialize_values_and_members(
         self: @S,
     ) -> Array<
-        IdValues,
+        SelectorValue,
     > {
         let mut members = Self::members();
         let mut values_array = Self::serialize_values_to_array(self);
-        let mut id_values = ArrayTrait::<IdValues>::new();
+        let mut selector_values = ArrayTrait::<SelectorValue>::new();
         loop {
             match (members.pop_front(), values_array.pop_front()) {
                 (
-                    Option::Some(member), Option::Some(values),
-                ) => { id_values.append(IdValues { id: *member, values: values }); },
+                    Option::Some(selector), Option::Some(value),
+                ) => { selector_values.append(SelectorValue { selector: *selector, value }); },
                 (Option::None, Option::None) => { break; },
                 _ => { panic!("Members and values array have different lengths"); },
             }
         };
-        id_values
+        selector_values
     }
     fn members() -> Span<felt252>;
 }

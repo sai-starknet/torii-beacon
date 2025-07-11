@@ -1,11 +1,14 @@
 #[starknet::contract]
 mod beacon {
-    use dojo_beacon::{owners_component, writers_component};
+    use dojo_beacon::{owners_component, writers_component, registry_component};
     use dojo_beacon::beacon::{IBeacon, IdKeysValues, IdValues, IdValuesArray};
     use owners_component::OwnersInternal;
     use writers_component::WritersInternal;
+
+    component!(path: registry_component, storage: registry, event: RegistryEvents);
     component!(path: owners_component, storage: owners, event: OwnersEvents);
     component!(path: writers_component, storage: writers, event: WritersEvents);
+
 
     #[storage]
     struct Storage {
@@ -13,6 +16,8 @@ mod beacon {
         owners: owners_component::Storage,
         #[substorage(v0)]
         writers: writers_component::Storage,
+        #[substorage(v0)]
+        registry: registry_component::Storage,
     }
 
     #[event]
@@ -22,6 +27,8 @@ mod beacon {
         OwnersEvents: owners_component::Event,
         #[flat]
         WritersEvents: writers_component::Event,
+        #[flat]
+        RegistryEvents: registry_component::Event,
     }
 
 

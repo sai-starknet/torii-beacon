@@ -7,7 +7,6 @@ pub impl ConstNsBeaconEmitter<
     M, TState, +Model<M>, +HasEmitterComponent<TState>, +Drop<TState>,
 > of BeaconModelEmitterTrait<TState, M> {
     fn emit_model(ref self: TState, model: @M) {
-        selector!(blah);
         let mut emitter: EmitterState = self.get_component_mut();
         emitter
             .emit_set_record(

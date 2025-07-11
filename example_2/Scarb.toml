@@ -9,6 +9,7 @@ experimental-features = ["negative_impls"]
 [dependencies]
 starknet = "=2.10.1"
 dojo_beacon = { path = "../" }
+dojo_beacon_macros = { path = "../macros" }
 
 [dev-dependencies]
 cairo_test = "=2.10.1"

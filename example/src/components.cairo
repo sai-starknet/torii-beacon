@@ -1,6 +1,6 @@
 use super::models::Direction;
 
-#[derive(Copy, Drop, Serde, Debug, starknet::Store)]
+#[derive(Copy, Drop, Serde, Debug, starknet::Store, Schema)]
 pub struct Moves {
     pub remaining: u8,
     pub last_direction: Direction,

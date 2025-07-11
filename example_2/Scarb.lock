@@ -17,6 +17,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "dojo_beacon_macros"
+version = "0.1.0"
+
+[[package]]
 name = "dojo_plugin"
 version = "2.10.1"
 source = "git+https://github.com/dojoengine/dojo?tag=v1.5.1#986c3b0c6d647b23847c70ddceb1d33ddac86ead"
@@ -26,4 +30,5 @@ name = "example"
 version = "0.1.0"
 dependencies = [
  "dojo_beacon",
+ "dojo_beacon_macros",
 ]

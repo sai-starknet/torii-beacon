@@ -10,34 +10,41 @@ trait IActions<T> {
 // dojo decorator
 #[starknet::contract]
 pub mod actions {
+    use dojo_beacon::dojo::traits::BeaconEmitterTrait;
     use starknet::{ContractAddress, ClassHash, get_caller_address};
 
     use starknet::storage::{Map, StorageMapReadAccess, StorageMapWriteAccess};
 
-    use dojo_beacon_example::models;
+    use crate::models;
     use models::{Vec2, Direction};
-    use dojo_beacon_example::components::Moves;
+    use crate::components::Moves;
 
-    use dojo_beacon::resource_component;
-    use crate::systems::Beacon;
     use super::{IActions, next_position};
+
+    use dojo_beacon::emitter_component;
+    use dojo_beacon::dojo::{const_ns, Schema};
+    use dojo_beacon::emitter::Registry;
 
     const NAMESPACE_HASH: felt252 = bytearray_hash!("dojo_starter");
 
-    component!(path: resource_component, storage: resource, event: ResourceEvents);
 
-    #[abi(embed_v0)]
-    impl Resource = resource_component::BeaconResource<ContractState>;
-
-    impl Events = resource_component::BeaconEventsImpl<ContractState>;
-
+    component!(path: emitter_component, storage: emitter, event: EmitterEvents);
+    impl Beacon = const_ns::ConstNsBeaconEmitter<NAMESPACE_HASH, ContractState>;
+    // impl Events = resource_component::BeaconEventsImpl<ContractState>;
 
     #[storage]
     struct Storage {
         #[substorage(v0)]
-        pub resource: resource_component::Storage,
+        pub emitter: emitter_component::Storage,
         pub positions: Map::<ContractAddress, Vec2>,
         pub moves: Map::<ContractAddress, Moves>,
+    }
+
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        #[flat]
+        EmitterEvents: emitter_component::Event,
     }
 
     #[constructor]
@@ -47,18 +54,13 @@ pub mod actions {
         positions_class_hash: ClassHash,
         moved_class_hash: ClassHash,
     ) {
-        Beacon::register_namespace(ref self, "dojo_starter");
-        Beacon::register_model(ref self, "dojo_starter", positions_class_hash);
-        Beacon::register_model(ref self, "dojo_starter", moves_class_hash);
-        Beacon::register_model(ref self, "dojo_starter", moved_class_hash);
+        self.register_namespace_with_hash("dojo_starter", NAMESPACE_HASH);
+        self.register_model("dojo_starter", positions_class_hash);
+        self.register_model("dojo_starter", moves_class_hash);
+        self.register_model("dojo_starter", moved_class_hash);
     }
 
-    #[event]
-    #[derive(Drop, starknet::Event)]
-    enum Event {
-        #[flat]
-        ResourceEvents: resource_component::Event,
-    }
+
     #[abi(embed_v0)]
     impl ActionsImpl of IActions<ContractState> {
         fn spawn(ref self: ContractState) {
@@ -88,7 +90,6 @@ pub mod actions {
         fn move(ref self: ContractState, direction: Direction) {
             // Get the address of the current caller, possibly the player's address.
             let player = get_caller_address();
-
             // Retrieve the player's current position and moves data from the world.
             let mut position = self.positions.read(player);
             let mut moves = self.moves.read(player);
@@ -117,24 +118,25 @@ pub mod actions {
     impl PrivateImpl of PrivateTrait {
         fn set_position(ref self: ContractState, player: ContractAddress, position: Vec2) {
             self.positions.write(player, position);
-            Beacon::emit_model(ref self, @models::Position { player, vec: position });
+            self.emit_model(@models::Position { player, vec: position });
         }
 
         fn set_moves(ref self: ContractState, player: ContractAddress, moves: Moves) {
             self.moves.write(player, moves);
-            Beacon::emit_model(
-                ref self,
-                @models::Moves {
-                    player,
-                    remaining: moves.remaining,
-                    last_direction: moves.last_direction,
-                    can_move: moves.can_move,
-                },
-            );
+            let members = moves.serialize_values_and_members();
+            self
+                .emit_model(
+                    @models::Moves {
+                        player,
+                        remaining: moves.remaining,
+                        last_direction: moves.last_direction,
+                        can_move: moves.can_move,
+                    },
+                );
         }
 
         fn emit_moved(ref self: ContractState, player: ContractAddress, direction: Direction) {
-            Beacon::emit_model(ref self, @models::Moved { player, direction });
+            self.emit_model(@models::Moved { player, direction });
         }
     }
 }
