@@ -1,5 +1,5 @@
 #[starknet::contract]
-mod m_$model_type$ {
+mod m_$model_name$ {
     use super::$model_type$;
 
     #[storage]

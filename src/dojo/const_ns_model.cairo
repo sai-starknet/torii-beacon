@@ -1,0 +1,82 @@
+use dojo::model::Model;
+use dojo::utils::serialize_inline;
+use crate::emitter::{DojoEventEmitter, HasEmitterComponent, EmitterState};
+use super::traits::BeaconModelEmitterTrait;
+const blah: felt252 = 0x123456789abcdef; // Placeholder for NAMESPACE_HASH
+pub impl ConstNsBeaconEmitter<
+    M, TState, +Model<M>, +HasEmitterComponent<TState>, +Drop<TState>,
+> of BeaconModelEmitterTrait<TState, M> {
+    fn emit_model(ref self: TState, model: @M) {
+        selector!(blah);
+        let mut emitter: EmitterState = self.get_component_mut();
+        emitter
+            .emit_set_record(
+                Model::<M>::selector(NAMESPACE_HASH),
+                model.entity_id(),
+                model.serialized_keys(),
+                model.serialized_values(),
+            );
+    }
+
+    fn emit_models(ref self: TState, models: Span<M>) {
+        let mut emitter: EmitterState = self.get_component_mut();
+        let selector = Model::<M>::selector(NAMESPACE_HASH);
+        for model in models {
+            emitter
+                .emit_set_record(
+                    selector, model.entity_id(), model.serialized_keys(), model.serialized_values(),
+                );
+        }
+    }
+    fn emit_entity<M, T, +Model<M>, +Serde<T>>(ref self: TState, entity_id: felt252, entity: @T) {
+        let mut emitter: EmitterState = self.get_component_mut();
+        emitter
+            .emit_update_record(
+                Model::<M>::selector(NAMESPACE_HASH), entity_id, serialize_inline(entity),
+            );
+    }
+    fn emit_entities<M, T, +Model<M>, +Serde<T>>(ref self: TState, entities: Array<(felt252, @T)>) {
+        let mut emitter: EmitterState = self.get_component_mut();
+        let selector = Model::<M>::selector(NAMESPACE_HASH);
+        for (entity_id, entity) in entities {
+            emitter.emit_update_record(selector, entity_id, serialize_inline(entity));
+        }
+    }
+    fn emit_member<M, T, +Model<M>, +Serde<T>>(
+        ref self: TState, entity_id: felt252, member_selector: felt252, member: @T,
+    ) {
+        let mut emitter: EmitterState = self.get_component_mut();
+        emitter
+            .emit_update_member(
+                Model::<M>::selector(NAMESPACE_HASH),
+                entity_id,
+                member_selector,
+                serialize_inline(member),
+            );
+    }
+    fn emit_members<M, T, +Model<M>, +Serde<T>>(
+        ref self: TState, member_selector: felt252, members: Array<(felt252, @T)>,
+    ) {
+        let mut emitter: EmitterState = self.get_component_mut();
+        let selector = Model::<M>::selector(NAMESPACE_HASH);
+        for (entity_id, member) in members {
+            emitter
+                .emit_update_member(selector, entity_id, member_selector, serialize_inline(member));
+        }
+    }
+    fn emit_model_members<M, T, +Model<M>, +Serde<T>>(
+        ref self: TState, entity_id: felt252, members: Array<(felt252, @T)>,
+    ) {
+        let mut emitter: EmitterState = self.get_component_mut();
+        let selector = Model::<M>::selector(NAMESPACE_HASH);
+        for (member_selector, member) in members {
+            emitter
+                .emit_update_member(selector, entity_id, member_selector, serialize_inline(member));
+        }
+    }
+    fn emit_delete_model<M, +Model<M>>(ref self: TState, entity_id: felt252) {
+        let mut emitter: EmitterState = self.get_component_mut();
+        emitter.emit_delete_record(Model::<M>::selector(NAMESPACE_HASH), entity_id);
+    }
+}
+

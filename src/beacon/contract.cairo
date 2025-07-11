@@ -1,21 +1,16 @@
 #[starknet::contract]
 mod beacon {
-    use dojo_beacon::{
-        owners_component, resource_component, resource_component::{BeaconEvents, ResourceWriter},
-        writers_component,
-    };
+    use dojo_beacon::{owners_component, writers_component};
     use dojo_beacon::beacon::{IBeacon, IdKeysValues, IdValues, IdValuesArray};
-
+    use owners_component::OwnersInternal;
+    use writers_component::WritersInternal;
     component!(path: owners_component, storage: owners, event: OwnersEvents);
     component!(path: writers_component, storage: writers, event: WritersEvents);
-    component!(path: resource_component, storage: resource, event: ResourceEvents);
 
     #[storage]
     struct Storage {
         #[substorage(v0)]
         owners: owners_component::Storage,
-        #[substorage(v0)]
-        resource: resource_component::Storage,
         #[substorage(v0)]
         writers: writers_component::Storage,
     }
@@ -26,13 +21,9 @@ mod beacon {
         #[flat]
         OwnersEvents: owners_component::Event,
         #[flat]
-        ResourceEvents: resource_component::Event,
-        #[flat]
         WritersEvents: writers_component::Event,
     }
 
-    #[abi(embed_v0)]
-    impl IResourse = resource_component::BeaconRegister<ContractState>;
 
     #[abi(embed_v0)]
     impl IOwners = owners_component::BeaconOwners<ContractState>;

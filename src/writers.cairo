@@ -1,4 +1,7 @@
 use starknet::ContractAddress;
+pub use writers_component::{
+    BeaconWriters, HasComponent as HasWritersComponent, ComponentState as WritersState,
+};
 
 #[starknet::interface]
 pub trait IBeaconWriters<T> {
@@ -27,7 +30,8 @@ pub mod writers_component {
     use starknet::{ContractAddress, get_caller_address};
     use starknet::storage::{Map, StorageMapReadAccess, StorageMapWriteAccess};
 
-    use dojo_beacon::{owners_component, owners_component::OwnersInternal, errors};
+    use crate::owners::{OwnersInternal, HasOwnersComponent};
+    use crate::errors;
 
     use super::IBeaconWriters;
 
@@ -42,7 +46,8 @@ pub mod writers_component {
     impl IBeaconWritersImpl<
         TContractState,
         +HasComponent<TContractState>,
-        impl Owners: owners_component::HasComponent<TContractState>,
+        +HasOwnersComponent<TContractState>,
+        +Drop<TContractState>,
     > of IBeaconWriters<ComponentState<TContractState>> {
         fn is_contract_writer(
             self: @ComponentState<TContractState>, user: ContractAddress,
@@ -51,12 +56,12 @@ pub mod writers_component {
         }
 
         fn grant_contract_writer(ref self: ComponentState<TContractState>, user: ContractAddress) {
-            get_dep_component!(@self, Owners).assert_caller_is_contract_owner();
+            self.get_contract().assert_caller_is_contract_owner();
             self.set_contract_writer(user, true);
         }
 
         fn revoke_contract_writer(ref self: ComponentState<TContractState>, user: ContractAddress) {
-            get_dep_component!(@self, Owners).assert_caller_is_contract_owner();
+            self.get_contract().assert_caller_is_contract_owner();
             self.set_contract_writer(user, false);
         }
 
@@ -69,16 +74,14 @@ pub mod writers_component {
         fn grant_namespace_writer(
             ref self: ComponentState<TContractState>, namespace: felt252, user: ContractAddress,
         ) {
-            get_dep_component!(@self, Owners)
-                .assert_caller_is_namespace_or_contract_owner(namespace);
+            self.get_contract().assert_caller_is_namespace_or_contract_owner(namespace);
             self.set_namespace_writer(namespace, user, true);
         }
 
         fn revoke_namespace_writer(
             ref self: ComponentState<TContractState>, namespace: felt252, user: ContractAddress,
         ) {
-            get_dep_component!(@self, Owners)
-                .assert_caller_is_namespace_or_contract_owner(namespace);
+            self.get_contract().assert_caller_is_namespace_or_contract_owner(namespace);
             self.set_namespace_writer(namespace, user, false);
         }
 
@@ -97,7 +100,8 @@ pub mod writers_component {
             model: felt252,
             user: ContractAddress,
         ) {
-            get_dep_component!(@self, Owners)
+            self
+                .get_contract()
                 .assert_caller_is_model_namespace_or_contract_owner(namespace, model);
             self.model_writers.write((namespace, user), true);
         }
@@ -108,16 +112,113 @@ pub mod writers_component {
             model: felt252,
             user: ContractAddress,
         ) {
-            get_dep_component!(@self, Owners)
+            self
+                .get_contract()
                 .assert_caller_is_model_namespace_or_contract_owner(namespace, model);
             self.model_writers.write((namespace, user), false);
         }
     }
 
-    #[generate_trait]
-    pub impl WritersInternalImpl<
+
+    pub trait WritersInternal<TState> {
+        fn set_contract_writer(ref self: TState, user: ContractAddress, value: bool);
+
+        fn contract_writer(self: @TState, user: ContractAddress) -> bool;
+
+        fn assert_is_contract_writer(
+            self: @TState, user: ContractAddress,
+        ) {
+            if !Self::contract_writer(self, user) {
+                errors::not_contract_writer(user);
+            }
+        }
+
+        fn assert_caller_is_contract_writer(
+            self: @TState,
+        ) {
+            Self::assert_is_contract_writer(self, get_caller_address());
+        }
+
+        fn set_namespace_writer(
+            ref self: TState, namespace: felt252, user: ContractAddress, value: bool,
+        );
+
+        fn namespace_writer(self: @TState, namespace: felt252, user: ContractAddress) -> bool;
+
+        fn is_namespace_or_contract_writer(
+            self: @TState, namespace: felt252, user: ContractAddress,
+        ) -> bool {
+            Self::namespace_writer(self, namespace, user) || Self::contract_writer(self, user)
+        }
+
+        fn is_caller_namespace_or_contract_writer(
+            self: @TState, namespace: felt252,
+        ) -> bool {
+            Self::is_namespace_or_contract_writer(self, namespace, get_caller_address())
+        }
+
+        fn assert_is_namespace_or_contract_writer(
+            self: @TState, namespace: felt252, user: ContractAddress,
+        ) {
+            if !Self::is_namespace_or_contract_writer(self, namespace, user) {
+                errors::not_namespace_or_contract_writer(user, namespace);
+            }
+        }
+
+        fn assert_caller_is_namespace_or_contract_writer(
+            self: @TState, namespace: felt252,
+        ) {
+            Self::assert_is_namespace_or_contract_writer(self, namespace, get_caller_address());
+        }
+
+        fn set_model_writer(
+            ref self: TState,
+            namespace: felt252,
+            model: felt252,
+            user: ContractAddress,
+            value: bool,
+        );
+
+        fn set_model_writer_from_selector(
+            ref self: TState, selector: felt252, user: ContractAddress, value: bool,
+        );
+
+        fn model_writer(
+            self: @TState, namespace: felt252, model: felt252, user: ContractAddress,
+        ) -> bool;
+
+        fn model_writer_from_selector(
+            self: @TState, selector: felt252, user: ContractAddress,
+        ) -> bool;
+
+        fn is_model_namespace_or_contract_writer(
+            self: @TState, namespace: felt252, model: felt252, user: ContractAddress,
+        ) -> bool {
+            Self::model_writer(self, namespace, model, user)
+                || Self::is_namespace_or_contract_writer(self, namespace, user)
+        }
+
+        fn assert_is_model_namespace_or_contract_writer(
+            self: @TState, namespace: felt252, model: felt252, user: ContractAddress,
+        ) {
+            if !Self::is_model_namespace_or_contract_writer(self, namespace, model, user) {
+                errors::not_model_namespace_or_contract_writer(user, namespace, model);
+            }
+        }
+
+        fn assert_caller_is_model_namespace_or_contract_writer(
+            self: @TState, namespace: felt252, model: felt252,
+        ) {
+            Self::assert_is_model_namespace_or_contract_writer(
+                self, namespace, model, get_caller_address(),
+            );
+        }
+    }
+
+
+    pub impl WritersComponentInternalImpl<
         TContractState, +HasComponent<TContractState>,
-    > of WritersInternal<TContractState> {
+    > of WritersInternal<ComponentState<TContractState>> {
         fn set_contract_writer(
             ref self: ComponentState<TContractState>, user: ContractAddress, value: bool,
         ) {
@@ -143,11 +244,6 @@ pub mod writers_component {
             self.namespace_writers.read((namespace, user))
         }
 
-        fn is_namespace_or_contract_writer(
-            self: @ComponentState<TContractState>, namespace: felt252, user: ContractAddress,
-        ) -> bool {
-            self.namespace_writer(namespace, user) || self.contract_writer(user)
-        }
 
         fn set_model_writer(
             ref self: ComponentState<TContractState>,
@@ -182,34 +278,62 @@ pub mod writers_component {
         ) -> bool {
             self.model_writers.read((selector, user))
         }
+    }
 
-        fn is_model_namespace_or_contract_writer(
-            self: @ComponentState<TContractState>,
-            namespace: felt252,
-            model: felt252,
-            user: ContractAddress,
+    pub impl WritersContractInternalImpl<
+        TContractState, +HasComponent<TContractState>, +Drop<TContractState>,
+    > of WritersInternal<TContractState> {
+        fn set_contract_writer(ref self: TContractState, user: ContractAddress, value: bool) {
+            let mut writers: ComponentState<TContractState> = self.get_component_mut();
+            writers.set_contract_writer(user, value);
+        }
+
+        fn contract_writer(self: @TContractState, user: ContractAddress) -> bool {
+            HasComponent::get_component(self).contract_writer(user)
+        }
+
+        fn set_namespace_writer(
+            ref self: TContractState, namespace: felt252, user: ContractAddress, value: bool,
+        ) {
+            let mut writers: ComponentState<TContractState> = self.get_component_mut();
+            writers.set_namespace_writer(namespace, user, value);
+        }
+
+        fn namespace_writer(
+            self: @TContractState, namespace: felt252, user: ContractAddress,
         ) -> bool {
-            self.model_writer(namespace, model, user)
-                || self.is_namespace_or_contract_writer(namespace, user)
+            HasComponent::get_component(self).namespace_writer(namespace, user)
         }
 
-        fn assert_is_model_namespace_or_contract_writer(
-            self: @ComponentState<TContractState>,
+
+        fn set_model_writer(
+            ref self: TContractState,
             namespace: felt252,
             model: felt252,
             user: ContractAddress,
+            value: bool,
         ) {
-            if !self.is_model_namespace_or_contract_writer(namespace, model, user) {
-                errors::not_namespace_or_contract_writer(user, namespace);
-            }
+            let mut writers: ComponentState<TContractState> = self.get_component_mut();
+            writers.set_model_writer(namespace, model, user, value);
         }
 
-        fn assert_caller_is_model_namespace_or_contract_writer(
-            self: @ComponentState<TContractState>, namespace: felt252, model: felt252,
+        fn set_model_writer_from_selector(
+            ref self: TContractState, selector: felt252, user: ContractAddress, value: bool,
         ) {
-            if !self.is_model_namespace_or_contract_writer(namespace, model, get_caller_address()) {
-                errors::not_namespace_or_contract_writer(get_caller_address(), namespace);
-            }
+            let mut writers: ComponentState<TContractState> = self.get_component_mut();
+            writers.set_model_writer_from_selector(selector, user, value);
+        }
+
+        fn model_writer(
+            self: @TContractState, namespace: felt252, model: felt252, user: ContractAddress,
+        ) -> bool {
+            HasComponent::get_component(self).model_writer(namespace, model, user)
+        }
+
+        fn model_writer_from_selector(
+            self: @TContractState, selector: felt252, user: ContractAddress,
+        ) -> bool {
+            HasComponent::get_component(self).model_writer_from_selector(selector, user)
         }
     }
 }

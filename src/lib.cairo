@@ -4,15 +4,9 @@ pub use owners::owners_component;
 pub mod writers;
 pub use writers::writers_component;
 
-pub mod resource {
-    pub mod model;
-    pub mod component;
-    pub mod resource;
-    pub use component::resource_component;
-    pub use resource::{DojoResource, Resource};
-}
-pub use resource::resource_component;
-pub use resource_component::HasComponent as ResourceComponent;
+
+pub mod model;
+
 
 pub mod errors;
 
@@ -20,7 +14,6 @@ pub mod interfaces {
     pub use super::beacon::{IBeaconDispatcher, IBeaconDispatcherTrait};
     pub use super::owners::{IBeaconOwnersDispatcher, IBeaconOwnersDispatcherTrait};
     pub use super::writers::{IBeaconWritersDispatcher, IBeaconWritersDispatcherTrait};
-    pub use super::resource::component::{IBeaconResourceDispatcher, IBeaconResourceDispatcherTrait};
 }
 
 pub mod beacon {
@@ -33,12 +26,25 @@ pub mod beacon {
 }
 
 pub mod emitter {
-    pub mod traits;
-    pub mod implementation;
+    pub mod component;
+    pub mod registry;
+    pub use registry::Registry;
+    pub use component::emitter_component;
+    pub use emitter_component::{
+        DojoEventEmitter, HasComponent as HasEmitterComponent, ComponentState as EmitterState,
+    };
 }
 
 pub mod dojo {
     pub mod schema;
+    pub mod const_ns;
+    pub mod const_ns_model;
+    pub mod state_ns;
+    pub mod arg_ns;
+    pub mod traits;
+    pub use const_ns::ConstNsBeaconEmitter;
+    pub use state_ns::StateNsBeaconEmitter;
+    pub use arg_ns::ArgNsBeaconEmitter;
 }
 
 pub mod utils {

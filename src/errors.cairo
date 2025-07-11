@@ -3,24 +3,28 @@ use core::{panics::panic_with_byte_array, never};
 use starknet::ContractAddress;
 
 pub fn not_contract_owner(user: ContractAddress) -> never {
-    panic_with_byte_array(@format!("Caller `{user:?}` is not the owner of the contract"))
+    panic_with_byte_array(@format!("`{user:?}` is not the owner of the contract"))
+}
+
+pub fn not_contract_writer(user: ContractAddress) -> never {
+    panic_with_byte_array(@format!("`{user:?}` is not a writer of the contract"))
 }
 
 pub fn not_namespace_hash_or_contract_owner(user: ContractAddress, namespace: felt252) -> never {
     panic_with_byte_array(
-        @format!("Caller `{user:?}` is not the owner of the contract or namespace `{namespace}`"),
+        @format!("`{user:?}` is not the owner of the contract or namespace `{namespace}`"),
     )
 }
 
 pub fn not_namespace_or_contract_owner(user: ContractAddress, namespace: ByteArray) -> never {
     panic_with_byte_array(
-        @format!("Caller `{user:?}` is not the owner of the contract or namespace `{namespace}`"),
+        @format!("`{user:?}` is not the owner of the contract or namespace `{namespace}`"),
     )
 }
 
 pub fn not_namespace_or_contract_writer(user: ContractAddress, namespace: felt252) -> never {
     panic_with_byte_array(
-        @format!("Caller `{user:?}` is not a writer of the contract or namespace `{namespace}`"),
+        @format!("`{user:?}` is not a writer of the contract or namespace `{namespace}`"),
     )
 }
 
@@ -29,7 +33,7 @@ pub fn not_model_namespace_or_contract_owner(
 ) -> never {
     panic_with_byte_array(
         @format!(
-            "Caller `{user:?}` is not the owner of the contract, namespace `{namespace}` or model `{model}`",
+            "`{user:?}` is not the owner of the contract, namespace `{namespace}` or model `{model}`",
         ),
     )
 }
@@ -39,14 +43,14 @@ pub fn not_model_namespace_or_contract_writer(
 ) -> never {
     panic_with_byte_array(
         @format!(
-            "Caller `{user:?}` is not a writer of the contract, namespace `{namespace}` or model `{model}`",
+            "`{user:?}` is not a writer of the contract, namespace `{namespace}` or model `{model}`",
         ),
     )
 }
 
 pub fn not_model_writer(user: ContractAddress, selector: felt252) -> never {
     panic_with_byte_array(
-        @format!("Caller `{user:?}` is not a writer of the model with selector {selector:x}"),
+        @format!("`{user:?}` is not a writer of the model with selector {selector:x}"),
     )
 }
 
