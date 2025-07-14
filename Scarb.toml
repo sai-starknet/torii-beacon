@@ -8,7 +8,7 @@ experimental-features = ["negative_impls"]
 
 [dependencies]
 starknet = "2.10.1"
-dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.5.1" }
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.6.0-alpha.2" }
 
 
 [dev-dependencies]
