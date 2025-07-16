@@ -3,10 +3,10 @@ version = 1
 
 [[package]]
 name = "dojo"
-version = "1.6.0-alpha.0"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0-alpha.2#184a4e8368269815823004d61e71f0699059ad77"
+version = "1.6.0-alpha.1"
+source = "git+https://github.com/dojoengine/dojo?rev=1a93f26b416ef0278eab3aee65cbfc993934d8b5#1a93f26b416ef0278eab3aee65cbfc993934d8b5"
 dependencies = [
- "dojo_plugin",
+ "dojo_macros",
 ]
 
 [[package]]
@@ -17,6 +17,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dojo_plugin"
-version = "2.10.1"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0-alpha.2#184a4e8368269815823004d61e71f0699059ad77"
+name = "dojo_macros"
+version = "1.6.0-alpha.1"
+source = "git+https://github.com/dojoengine/dojo?rev=1a93f26b416ef0278eab3aee65cbfc993934d8b5#1a93f26b416ef0278eab3aee65cbfc993934d8b5"
