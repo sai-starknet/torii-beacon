@@ -7,23 +7,18 @@ trait IActions<T> {
     fn move(ref self: T, direction: Direction);
 }
 
-// dojo decorator
 #[starknet::contract]
 pub mod actions {
-    use dojo_beacon::dojo::traits::BeaconEmitterTrait;
-    use starknet::{ContractAddress, ClassHash, get_caller_address};
-
-    use starknet::storage::{Map, StorageMapReadAccess, StorageMapWriteAccess};
-
-    use crate::models;
-    use models::{Vec2, Direction};
     use crate::components::Moves;
+    use crate::models;
+    use crate::models::{Direction, Vec2};
 
-    use super::{IActions, next_position};
-
-    use dojo_beacon::emitter_component;
-    use dojo_beacon::dojo::{const_ns, Schema};
+    use dojo_beacon::dojo::const_ns;
     use dojo_beacon::emitter::Registry;
+    use dojo_beacon::{EmitterEvents, emitter_component};
+    use starknet::storage::{Map, StorageMapReadAccess, StorageMapWriteAccess};
+    use starknet::{ClassHash, ContractAddress, get_caller_address};
+    use super::{IActions, next_position};
 
     const NAMESPACE_HASH: felt252 = bytearray_hash!("dojo_starter");
 
@@ -44,7 +39,7 @@ pub mod actions {
     #[derive(Drop, starknet::Event)]
     enum Event {
         #[flat]
-        EmitterEvents: emitter_component::Event,
+        EmitterEvents: EmitterEvents,
     }
 
     #[constructor]
@@ -123,7 +118,6 @@ pub mod actions {
 
         fn set_moves(ref self: ContractState, player: ContractAddress, moves: Moves) {
             self.moves.write(player, moves);
-            let members = moves.serialize_values_and_members();
             self
                 .emit_model(
                     @models::Moves {

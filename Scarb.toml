@@ -8,11 +8,11 @@ experimental-features = ["negative_impls"]
 
 [dependencies]
 starknet = "2.10.1"
-dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.6.0-alpha.2" }
-
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.6.0" }
+sai_core_utils = { git = "https://github.com/sai-starknet/cairo-utils", tag = "cairo-2.10.1" }
+sai_access = { git = "https://github.com/sai-starknet/cairo-utils", tag = "cairo-2.10.1" }
 
 [dev-dependencies]
-# dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.5.0" }
 cairo_test = "2.10.1"
 
 [lib]
@@ -20,3 +20,6 @@ cairo_test = "2.10.1"
 [[target.starknet-contract]]
 sierra = true
 allowed-libfuncs-list.name = "experimental"
+
+[tool.fmt]
+sort-module-level-items = true

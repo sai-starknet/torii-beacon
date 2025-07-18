@@ -1,10 +1,10 @@
 #[starknet::component]
 pub mod emitter_component {
-    use starknet::{ContractAddress, ClassHash};
     use dojo::world::world::{
-        NamespaceRegistered, ModelRegistered, StoreSetRecord, StoreUpdateRecord, StoreUpdateMember,
-        StoreDelRecord,
+        ModelRegistered, NamespaceRegistered, StoreDelRecord, StoreSetRecord, StoreUpdateMember,
+        StoreUpdateRecord,
     };
+    use starknet::{ClassHash, ContractAddress};
 
     #[storage]
     pub struct Storage {}

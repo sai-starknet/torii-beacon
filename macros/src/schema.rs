@@ -60,7 +60,7 @@ pub fn schema(token_stream: TokenStream) -> ProcMacroResult {
 
 pub fn serialize_member_to_array(array_name: String, member_name: &String) -> RewriteNode {
     RewriteNode::Text(format!(
-        "\t{}.append(dojo_beacon::utils::serialize_inline(self.{}).span());\n",
+        "\t{}.append(sai_core_utils::serialize_all(self.{}));\n",
         array_name, member_name
     ))
 }

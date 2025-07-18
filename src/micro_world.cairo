@@ -1,8 +1,8 @@
-use starknet::ClassHash;
 use dojo_beacon::{
+    resource_component::{BeaconEvents, HasComponent, ResourceRegister},
     utils::serde::serialize_inline,
-    resource_component::{HasComponent, ResourceRegister, BeaconEvents},
 };
+use starknet::ClassHash;
 
 pub trait MicroEmitter<TState> {
     fn register_namespace(ref self: TState, namespace: ByteArray, hash: felt252);

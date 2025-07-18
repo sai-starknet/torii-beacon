@@ -1,7 +1,7 @@
-use starknet::ClassHash;
-use dojo::utils::bytearray_hash;
-use crate::emitter::{DojoEventEmitter, HasEmitterComponent, EmitterState};
+use crate::emitter::{DojoEventEmitter, EmitterState, HasEmitterComponent};
 use crate::model::{calculate_model_contract_address, get_model_name};
+use dojo::utils::bytearray_hash;
+use starknet::ClassHash;
 
 pub trait Registry<TState> {
     fn register_namespace(ref self: TState, namespace: ByteArray);

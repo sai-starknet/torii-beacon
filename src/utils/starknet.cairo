@@ -1,7 +1,7 @@
-use core::pedersen::pedersen;
 use core::num::traits::Zero;
+use core::pedersen::pedersen;
 
-use starknet::{ContractAddress, ClassHash, contract_address_const};
+use starknet::{ClassHash, ContractAddress, contract_address_const};
 
 use super::pedersen::{pedersen_array_hash, pedersen_fixed_array_hash};
 
