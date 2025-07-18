@@ -10,6 +10,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "dojo_beacon_example"
+version = "0.1.0"
+dependencies = [
+ "dojo",
+ "dojo_cairo_test",
+ "torii_beacon",
+]
+
+[[package]]
+name = "dojo_cairo_test"
+version = "1.6.0"
+source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0#c7d8b321abc711c14bddcf76f41587f6ef21c356"
+dependencies = [
+ "dojo",
+]
+
+[[package]]
 name = "dojo_plugin"
 version = "2.10.1"
 source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0#c7d8b321abc711c14bddcf76f41587f6ef21c356"

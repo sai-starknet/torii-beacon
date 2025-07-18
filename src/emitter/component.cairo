@@ -20,11 +20,38 @@ pub mod emitter_component {
         StoreDelRecord: StoreDelRecord,
     }
 
+    pub trait ToriiEventEmitter<TState> {
+        fn emit_namespace_registered(ref self: TState, namespace: ByteArray, hash: felt252);
+        fn emit_model_registered(
+            ref self: TState,
+            name: ByteArray,
+            namespace: ByteArray,
+            address: ContractAddress,
+            class_hash: ClassHash,
+        );
+        fn emit_set_record(
+            ref self: TState,
+            selector: felt252,
+            entity_id: felt252,
+            keys: Span<felt252>,
+            values: Span<felt252>,
+        );
+        fn emit_update_record(
+            ref self: TState, selector: felt252, entity_id: felt252, values: Span<felt252>,
+        );
+        fn emit_update_member(
+            ref self: TState,
+            selector: felt252,
+            entity_id: felt252,
+            member_selector: felt252,
+            values: Span<felt252>,
+        );
+        fn emit_delete_record(ref self: TState, selector: felt252, entity_id: felt252);
+    }
 
-    #[generate_trait]
-    pub impl DojoEventEmitterImpl<
+    pub impl ToriiEventEmitterComponent<
         TContractState, +HasComponent<TContractState>,
-    > of DojoEventEmitter<TContractState> {
+    > of ToriiEventEmitter<ComponentState<TContractState>> {
         fn emit_namespace_registered(
             ref self: ComponentState<TContractState>, namespace: ByteArray, hash: felt252,
         ) {
@@ -40,6 +67,7 @@ pub mod emitter_component {
         ) {
             self.emit(ModelRegistered { name, namespace, address, class_hash });
         }
+
         fn emit_set_record(
             ref self: ComponentState<TContractState>,
             selector: felt252,
@@ -73,6 +101,62 @@ pub mod emitter_component {
             ref self: ComponentState<TContractState>, selector: felt252, entity_id: felt252,
         ) {
             self.emit(StoreDelRecord { selector, entity_id });
+        }
+    }
+
+
+    pub impl ToriiEventEmitterContract<
+        TContractState, +HasComponent<TContractState>, +Drop<TContractState>,
+    > of ToriiEventEmitter<TContractState> {
+        fn emit_namespace_registered(
+            ref self: TContractState, namespace: ByteArray, hash: felt252,
+        ) {
+            let mut contract = self.get_component_mut();
+            contract.emit(NamespaceRegistered { namespace, hash });
+        }
+
+        fn emit_model_registered(
+            ref self: TContractState,
+            name: ByteArray,
+            namespace: ByteArray,
+            address: ContractAddress,
+            class_hash: ClassHash,
+        ) {
+            let mut contract = self.get_component_mut();
+            contract.emit(ModelRegistered { name, namespace, address, class_hash });
+        }
+        fn emit_set_record(
+            ref self: TContractState,
+            selector: felt252,
+            entity_id: felt252,
+            keys: Span<felt252>,
+            values: Span<felt252>,
+        ) {
+            let mut contract = self.get_component_mut();
+            contract.emit(StoreSetRecord { entity_id, selector, keys, values });
+        }
+
+        fn emit_update_record(
+            ref self: TContractState, selector: felt252, entity_id: felt252, values: Span<felt252>,
+        ) {
+            let mut contract = self.get_component_mut();
+            contract.emit(StoreUpdateRecord { selector, entity_id, values });
+        }
+
+        fn emit_update_member(
+            ref self: TContractState,
+            selector: felt252,
+            entity_id: felt252,
+            member_selector: felt252,
+            values: Span<felt252>,
+        ) {
+            let mut contract = self.get_component_mut();
+            contract.emit(StoreUpdateMember { selector, entity_id, member_selector, values });
+        }
+
+        fn emit_delete_record(ref self: TContractState, selector: felt252, entity_id: felt252) {
+            let mut contract = self.get_component_mut();
+            contract.emit(StoreDelRecord { selector, entity_id });
         }
     }
 }

@@ -1,18 +1,21 @@
 pub mod errors;
 
 
-pub mod model;
-pub mod serialized_data;
+pub mod model {
+    pub mod interface;
+}
 
 pub mod emitter {
     pub mod component;
-    pub mod registry;
+    pub mod const_entity;
+    pub mod entity;
+
     pub use component::emitter_component;
     pub use emitter_component::{
-        ComponentState as EmitterState, DojoEventEmitter, Event as EmitterEvents,
-        HasComponent as HasEmitterComponent,
+        ComponentState as EmitterState, Event as EmitterEvents, HasComponent as HasEmitterComponent,
+        ToriiEventEmitter,
     };
-    pub use registry::Registry;
+    pub use entity::EntityEmitter;
 }
 pub use emitter::{EmitterEvents, EmitterState, HasEmitterComponent, emitter_component};
 
@@ -28,11 +31,13 @@ pub use registry::registry_component;
 pub mod dojo {
     pub mod arg_ns;
     pub mod const_ns;
-    pub mod schema;
+    pub use const_ns::ConstNsBeaconEmitter;
     pub mod state_ns;
     pub mod traits;
     pub use arg_ns::ArgNsBeaconEmitter;
-    pub use schema::Schema;
+    pub mod model;
+    pub mod registry;
+    pub use registry::DojoRegistry;
     pub use state_ns::StateNsBeaconEmitter;
 }
 
@@ -40,8 +45,13 @@ pub mod utils {
     pub mod pedersen;
     pub mod starknet;
     pub use pedersen::{pedersen_array_hash, pedersen_fixed_array_hash};
-    pub use starknet::{calculate_contract_address, calculate_udc_contract_address};
+    pub use starknet::{
+        calculate_contract_address, calculate_udc_contract_address, calculate_utc_zero_address,
+    };
 }
+
+pub mod schema;
+
 
 #[cfg(test)]
 mod tests {

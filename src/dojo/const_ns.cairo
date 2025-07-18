@@ -1,4 +1,4 @@
-use crate::emitter::{DojoEventEmitter, EmitterState, HasEmitterComponent};
+use crate::emitter::{EmitterState, HasEmitterComponent, ToriiEventEmitter};
 use dojo::model::Model;
 use sai_core_utils::SerdeAll;
 use super::traits::BeaconEmitterTrait;

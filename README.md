@@ -47,11 +47,10 @@ mod my_contract {
         ref self: ContractState,
         model_class_hash: ClassHash,
     ) {
-        self.register_namespace_with_hash("my_namespace", NAMESPACE_HASH);
         self.register_model("my_namespace", model_class_hash);
 
         self.emit_model(@MyModel { id: 1, value: 42 });
-        self.emit_member::<MyModel>()
+        self.emit_member::<MyModel>(selector!("value"), 1, 100);
     }
 
 }

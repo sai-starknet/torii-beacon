@@ -10,21 +10,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "dojo_beacon"
-version = "0.2.3"
-dependencies = [
- "dojo",
- "sai_access",
- "sai_core_utils",
-]
-
-[[package]]
 name = "dojo_beacon_example"
 version = "0.1.0"
 dependencies = [
  "dojo",
- "dojo_beacon",
  "dojo_cairo_test",
+ "torii_beacon",
+ "torii_beacon_macros",
 ]
 
 [[package]]
@@ -49,3 +41,16 @@ source = "git+https://github.com/sai-starknet/cairo-utils?tag=cairo-2.10.1#73db8
 name = "sai_core_utils"
 version = "0.1.0"
 source = "git+https://github.com/sai-starknet/cairo-utils?tag=cairo-2.10.1#73db8c4fa4a1a8024e736a86eca721d4b65ca0dd"
+
+[[package]]
+name = "torii_beacon"
+version = "0.2.3"
+dependencies = [
+ "dojo",
+ "sai_access",
+ "sai_core_utils",
+]
+
+[[package]]
+name = "torii_beacon_macros"
+version = "0.1.0"

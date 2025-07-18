@@ -8,7 +8,8 @@ version = "0.1.0"
 [dependencies]
 starknet = "=2.10.1"
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.6.0" }
-dojo_beacon = { path = "../" }
+torii_beacon = { path = "../" }
+torii_beacon_macros = { path = "../macros" }
 
 [dev-dependencies]
 dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.6.0" }

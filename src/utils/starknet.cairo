@@ -37,3 +37,8 @@ pub fn calculate_contract_address(
         .try_into()
         .unwrap()
 }
+
+
+pub fn calculate_utc_zero_address(class_hash: ClassHash) -> ContractAddress {
+    calculate_contract_address(contract_address_const::<0x0>(), 0x0, class_hash, [].span())
+}

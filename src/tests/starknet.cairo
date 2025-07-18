@@ -1,8 +1,8 @@
 use core::metaprogramming::TypeEqual;
 use core::poseidon::poseidon_hash_span;
-use dojo::utils::{bytearray_hash};
 
-use dojo_beacon::utils::{calculate_contract_address, calculate_udc_contract_address};
+use crate::utils::{calculate_contract_address, calculate_udc_contract_address};
+use dojo::utils::{bytearray_hash};
 use starknet::{ClassHash, ContractAddress};
 
 #[derive(Drop)]

@@ -12,13 +12,13 @@ pub mod actions {
     use crate::components::Moves;
     use crate::models;
     use crate::models::{Direction, Vec2};
-
-    use dojo_beacon::dojo::const_ns;
-    use dojo_beacon::emitter::Registry;
-    use dojo_beacon::{EmitterEvents, emitter_component};
     use starknet::storage::{Map, StorageMapReadAccess, StorageMapWriteAccess};
     use starknet::{ClassHash, ContractAddress, get_caller_address};
     use super::{IActions, next_position};
+    use torii_beacon::dojo::DojoRegistry;
+
+    use torii_beacon::dojo::const_ns;
+    use torii_beacon::{EmitterEvents, emitter_component};
 
     const NAMESPACE_HASH: felt252 = bytearray_hash!("dojo_starter");
 
