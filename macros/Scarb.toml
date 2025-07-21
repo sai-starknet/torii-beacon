@@ -3,3 +3,5 @@ name = "torii_beacon_macros"
 version = "0.1.0"
 
 [cairo-plugin]
+
+[dependencies]

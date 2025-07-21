@@ -1,5 +1,5 @@
 // pub mod introspect;
-// pub mod model;
+pub mod model;
 pub mod schema;
 // pub mod type_reading;
 // pub use type_reading::{

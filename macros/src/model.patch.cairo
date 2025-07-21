@@ -1,3 +1,5 @@
+
+
 #[starknet::contract]
 pub mod m_$model_type$ {
     use super::$model_type$;
@@ -17,5 +19,5 @@ pub mod m_$model_type$ {
     }
 
     #[abi(embed_v0)]
-    impl $model_type$ModelImpl = torii_beacon::model::interfaceISaiModelImpl<ContractState, $model_type$>;
+    impl $model_type$ModelImpl = torii_beacon::model::interface::ISaiModelImpl<ContractState, $model_type$>;
 }
