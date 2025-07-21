@@ -8,21 +8,23 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-bigdecimal = "0.4.5"
-cairo-lang-macro = "0.1.1"
+
+[workspace]
+cairo-lang-macro = { version = "0.2.0", git = "https://github.com/software-mansion/scarb.git" }
 cairo-lang-parser = "2.11.4"
 cairo-lang-syntax = "2.11.4"
 cairo-lang-defs = "=2.11.4"
 cairo-lang-diagnostics = "2.11.4"
 cairo-lang-utils = "=2.11.4"
 cairo-lang-filesystem = "2.11.4"
+starknet-crypto = "0.7.3"
 smol_str = "0.2.2"
 serde = { version = "1.0", features = ["derive"] }
 starknet = "0.12.0"
 indoc = "2"
 convert_case = "0.8.0"
-# cairo_lang_reader = { git = "https://github.com/sai-starknet/cairo-lang-reader", branch = "dev" }
-cairo_lang_reader = { path = "../../cairo-lang-reader" }
-
-
-[workspace]
+cairo_lang_reader = { git = "https://github.com/sai-starknet/cairo-lang-reader", branch = "v2.11.4-rc.0" }
+cainome = { git = "https://github.com/cartridge-gg/cainome", branch = "snip12", features = [
+    "abigen-rs",
+] }
+cainome-cairo-serde = { git = "https://github.com/cartridge-gg/cainome", branch = "snip12" }

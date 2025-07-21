@@ -43,7 +43,7 @@ source = "git+https://github.com/sai-starknet/cairo-utils?tag=cairo-2.10.1#73db8
 
 [[package]]
 name = "torii_beacon"
-version = "0.2.3"
+version = "1.6.0-rc.0"
 dependencies = [
  "dojo",
  "sai_access",

@@ -10,6 +10,8 @@ starknet = "2.11.4"
 dojo = { git = "https://github.com/dojoengine/dojo", rev = "1a93f26b416ef0278eab3aee65cbfc993934d8b5" }
 torii_beacon = { path = "../" }
 torii_beacon_macros = { path = "../macros" }
+sai_core_utils = { git = "https://github.com/sai-starknet/cairo-utils", tag = "cairo-2.11.4" }
+alexandria_macros = { git = "https://github.com/keep-starknet-strange/alexandria", tag = "v0.4.0" }
 
 [dev-dependencies]
 # dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.6.0" }

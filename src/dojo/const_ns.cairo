@@ -1,11 +1,10 @@
-use crate::emitter::{EmitterState, HasEmitterComponent, ToriiEventEmitter};
 use dojo::model::Model;
 use sai_core_utils::SerdeAll;
-use super::traits::BeaconEmitterTrait;
+use crate::emitter::{EmitterState, HasEmitterComponent, ToriiEventEmitter};
 
 pub impl ConstNsBeaconEmitter<
     const NAMESPACE_HASH: felt252, TState, impl Emitter: HasEmitterComponent<TState>, +Drop<TState>,
-> of BeaconEmitterTrait<TState> {
+> of super::traits::BeaconEmitterTrait<TState> {
     fn emit_model<M, +Model<M>>(ref self: TState, model: @M) {
         let mut emitter: EmitterState = self.get_component_mut();
         emitter

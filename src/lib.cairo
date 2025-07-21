@@ -31,7 +31,6 @@ pub use registry::registry_component;
 pub mod dojo {
     pub mod arg_ns;
     pub mod const_ns;
-    pub use const_ns::ConstNsBeaconEmitter;
     pub mod state_ns;
     pub mod traits;
     pub use arg_ns::ArgNsBeaconEmitter;
@@ -51,6 +50,9 @@ pub mod utils {
 }
 
 pub mod schema;
+pub mod external {
+    pub use sai_core_utils::SerdeAll;
+}
 
 
 #[cfg(test)]

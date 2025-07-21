@@ -12,7 +12,7 @@ trait ISaiModel<TContractState> {
 
 
 #[starknet::embeddable]
-impl ISaiModelImpl<TContractState, M, +Introspect<M>> of ISaiModel<TContractState> {
+pub impl ISaiModelImpl<TContractState, M, +Introspect<M>> of ISaiModel<TContractState> {
     fn schema(self: @TContractState) -> Struct {
         match Introspect::<M>::ty() {
             Ty::Struct(s) => s,

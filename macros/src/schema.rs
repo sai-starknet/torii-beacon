@@ -1,9 +1,10 @@
 use cairo_lang_defs::patcher::RewriteNode;
 use cairo_lang_macro::{derive_macro, ProcMacroResult, TokenStream};
-use cairo_lang_reader::{parse_token_stream_to_syntax_file, Item, SyntaxElementTrait};
+use cairo_lang_reader::{
+    item::Member, parse_token_stream_to_syntax_file, Item, SyntaxElementTrait,
+};
 use cairo_lang_utils::unordered_hash_map::UnorderedHashMap;
 use starknet::core::utils::get_selector_from_name;
-pub const SCHEMA_DERIVE_MACRO: &str = "Schema";
 const SCHEMA_CODE_PATCH: &str = include_str!("./schema.patch.cairo");
 
 #[derive_macro]
@@ -19,7 +20,7 @@ pub fn schema(token_stream: TokenStream) -> ProcMacroResult {
     };
     let mut serialize_members_to_array: Vec<RewriteNode> = vec![];
     let mut member_selctors = vec![];
-    for member in cairo_struct.members() {
+    for member in cairo_struct.members::<Vec<Member>>() {
         let member_name = member.name();
         member_selctors.push(RewriteNode::Text(format!(
             "\t    {},\n",
@@ -60,7 +61,7 @@ pub fn schema(token_stream: TokenStream) -> ProcMacroResult {
 
 pub fn serialize_member_to_array(array_name: String, member_name: &String) -> RewriteNode {
     RewriteNode::Text(format!(
-        "\t{}.append(sai_core_utils::serialize_all(self.{}));\n",
+        "\t{}.append(torii_beacon::external::SerdeAll::serialize_all(self.{}));\n",
         array_name, member_name
     ))
 }
