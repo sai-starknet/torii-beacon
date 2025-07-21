@@ -1,11 +1,15 @@
+use crate::utils::str_to_token_stream;
 use cairo_lang_defs::patcher::RewriteNode;
 use cairo_lang_macro::{attribute_macro, ProcMacroResult, TokenStream};
 use cairo_lang_reader::generic_param::OptionWrappedGenericParamList;
 use cairo_lang_reader::item::Struct;
-use cairo_lang_reader::{parse_token_stream_to_syntax_file, Item, SyntaxElementTrait, Visibility};
+use cairo_lang_reader::{
+    parse_token_stream_to_syntax_file, Item, QueryAttrs, SyntaxElementTrait, Visibility,
+};
 use cairo_lang_utils::unordered_hash_map::UnorderedHashMap;
 use convert_case::{Case, Casing};
 
+const DERIVE_ATTR: &str = "derive";
 pub const MODEL_ATTRIBUTE_MACRO: &str = "Model";
 const MODEL_CODE_PATCH: &str = include_str!("./model.patch.cairo");
 
@@ -17,7 +21,7 @@ pub fn beacon_model(_attr: TokenStream, original: TokenStream) -> ProcMacroResul
         Item::Struct(item) => item,
         _ => {
             diagnostics.push("Expected a struct".to_string());
-            return ProcMacroResult::new(TokenStream::new("".to_string()));
+            return ProcMacroResult::new(str_to_token_stream(""));
         }
     };
     let name = cairo_struct.name();
@@ -37,10 +41,27 @@ pub fn beacon_model(_attr: TokenStream, original: TokenStream) -> ProcMacroResul
     builder.add_modified(node);
 
     let (code, _) = builder.build();
-    ProcMacroResult::new(TokenStream::new(code.to_string()))
+    ProcMacroResult::new(str_to_token_stream(&code))
 }
 
 fn remove_struct_derive(node: Struct) -> String {
+    let attributes: Vec<String> = node
+        .query_attr(DERIVE_ATTR)
+        .iter()
+        .flat_map(|attr| attr.arguments())
+        .map(|arg| arg.get_text())
+        .filter(|arg| match arg.as_str() {
+            "Copy" | "Drop" | "Clone" | "Debug" | "Default" | "Destruct" | "Hash"
+            | "PanicDestruct" | "PartialEq" | "Serde" => false,
+            _ => true,
+        })
+        .collect();
+    let derive = if attributes.is_empty() {
+        String::new()
+    } else {
+        format!("#[{}({})]\n", DERIVE_ATTR, attributes.join(", "))
+    };
+
     let visibility = match node.visibility() {
         Visibility::Pub => "pub ",
         Visibility::Default => "",
@@ -53,7 +74,7 @@ fn remove_struct_derive(node: Struct) -> String {
         .get_child_syntax_element::<{ Struct::INDEX_MEMBERS }>()
         .get_text();
     format!(
-        r#"{visibility}struct {name}{params} {{
+        r#"{derive}{visibility}struct {name}{params} {{
 {members}
 }}
 "#

@@ -1,13 +1,14 @@
-#[derive(Drop, Serde, Introspect)]
+#[derive(Drop, Serde, Introspect, Copy, Debug, Schema, PartialEq)]
 #[beacon_model]
 struct MyTable {
     pub value_1: u8,
     pub value_2: felt252,
-    pub value_3: i128,
+    pub value_3: u128,
     pub value_4: u256,
 }
 
-#[derive(Drop, Serde, Schema)]
+#[derive(Drop, Serde)]
+#[derive(Schema)]
 struct MySchema {
     pub value_1: u8,
     pub value_4: u256,

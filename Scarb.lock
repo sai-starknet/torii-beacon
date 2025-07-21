@@ -4,7 +4,7 @@ version = 1
 [[package]]
 name = "dojo"
 version = "1.6.0-alpha.1"
-source = "git+https://github.com/dojoengine/dojo?rev=1a93f26b416ef0278eab3aee65cbfc993934d8b5#1a93f26b416ef0278eab3aee65cbfc993934d8b5"
+source = "git+https://github.com/dojoengine/dojo#c876437d20b101e051656fa846288340b65612bc"
 dependencies = [
  "dojo_macros",
 ]
@@ -12,7 +12,7 @@ dependencies = [
 [[package]]
 name = "dojo_macros"
 version = "1.6.0-alpha.1"
-source = "git+https://github.com/dojoengine/dojo?rev=1a93f26b416ef0278eab3aee65cbfc993934d8b5#1a93f26b416ef0278eab3aee65cbfc993934d8b5"
+source = "git+https://github.com/dojoengine/dojo#c876437d20b101e051656fa846288340b65612bc"
 
 [[package]]
 name = "sai_access"
@@ -29,6 +29,7 @@ name = "torii_beacon"
 version = "1.6.0-rc.0"
 dependencies = [
  "dojo",
+ "dojo_macros",
  "sai_access",
  "sai_core_utils",
 ]

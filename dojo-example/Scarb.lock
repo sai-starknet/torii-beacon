@@ -3,10 +3,10 @@ version = 1
 
 [[package]]
 name = "dojo"
-version = "1.6.0"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0#c7d8b321abc711c14bddcf76f41587f6ef21c356"
+version = "1.6.0-alpha.1"
+source = "git+https://github.com/dojoengine/dojo#c876437d20b101e051656fa846288340b65612bc"
 dependencies = [
- "dojo_plugin",
+ "dojo_macros",
 ]
 
 [[package]]
@@ -14,38 +14,31 @@ name = "dojo_beacon_example"
 version = "0.1.0"
 dependencies = [
  "dojo",
- "dojo_cairo_test",
+ "dojo_macros",
  "torii_beacon",
 ]
 
 [[package]]
-name = "dojo_cairo_test"
-version = "1.6.0"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0#c7d8b321abc711c14bddcf76f41587f6ef21c356"
-dependencies = [
- "dojo",
-]
-
-[[package]]
-name = "dojo_plugin"
-version = "2.10.1"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0#c7d8b321abc711c14bddcf76f41587f6ef21c356"
+name = "dojo_macros"
+version = "1.6.0-alpha.1"
+source = "git+https://github.com/dojoengine/dojo#c876437d20b101e051656fa846288340b65612bc"
 
 [[package]]
 name = "sai_access"
 version = "0.1.0"
-source = "git+https://github.com/sai-starknet/cairo-utils?tag=cairo-2.10.1#73db8c4fa4a1a8024e736a86eca721d4b65ca0dd"
+source = "git+https://github.com/sai-starknet/cairo-utils?branch=cairo-2.11.4#ef1fa4bd72ade1e8f38fc84646d6422f09821df2"
 
 [[package]]
 name = "sai_core_utils"
 version = "0.1.0"
-source = "git+https://github.com/sai-starknet/cairo-utils?tag=cairo-2.10.1#73db8c4fa4a1a8024e736a86eca721d4b65ca0dd"
+source = "git+https://github.com/sai-starknet/cairo-utils?branch=cairo-2.11.4#ef1fa4bd72ade1e8f38fc84646d6422f09821df2"
 
 [[package]]
 name = "torii_beacon"
 version = "1.6.0-rc.0"
 dependencies = [
  "dojo",
+ "dojo_macros",
  "sai_access",
  "sai_core_utils",
 ]

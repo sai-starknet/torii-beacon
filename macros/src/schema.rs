@@ -5,6 +5,8 @@ use cairo_lang_reader::{
 };
 use cairo_lang_utils::unordered_hash_map::UnorderedHashMap;
 use starknet::core::utils::get_selector_from_name;
+
+use crate::utils::str_to_token_stream;
 const SCHEMA_CODE_PATCH: &str = include_str!("./schema.patch.cairo");
 
 #[derive_macro]
@@ -15,7 +17,7 @@ pub fn schema(token_stream: TokenStream) -> ProcMacroResult {
         Item::Struct(item) => item,
         _ => {
             diagnostics.push("Expected a struct".to_string());
-            return ProcMacroResult::new(TokenStream::new("".to_string()));
+            return ProcMacroResult::new(str_to_token_stream(""));
         }
     };
     let mut serialize_members_to_array: Vec<RewriteNode> = vec![];
@@ -56,7 +58,7 @@ pub fn schema(token_stream: TokenStream) -> ProcMacroResult {
     builder.add_modified(node);
 
     let (code, _) = builder.build();
-    ProcMacroResult::new(TokenStream::new(code.to_string()))
+    ProcMacroResult::new(str_to_token_stream(&code))
 }
 
 pub fn serialize_member_to_array(array_name: String, member_name: &String) -> RewriteNode {

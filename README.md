@@ -1,6 +1,6 @@
-# dojo-beacon
+# Torii beacon
 
-The dojo beacon is a lightweight component that can be added to a starknet contract to provide a simple way to emit events that can be indexed by torii.
+The Torii beacon is a lightweight component that can be added to a starknet contract to provide a simple way to emit events that can be indexed by torii.
 
 This allows for contracts to define their own storage and permissions but still benefit from easy off-chain indexing.
 

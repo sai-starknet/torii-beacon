@@ -28,7 +28,7 @@ pub struct Position {
 }
 
 
-#[derive(Serde, Copy, Drop, Introspect, PartialEq, Debug, starknet::Store)]
+#[derive(Serde, Copy, Drop, Default, Introspect, PartialEq, Debug, starknet::Store)]
 pub enum Direction {
     #[default]
     None,

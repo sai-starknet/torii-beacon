@@ -1,8 +1,6 @@
-use std::vec;
-
+use crate::utils::str_to_token_stream;
 use cainome::cairo_serde::{ByteArray, CairoSerde};
 use cairo_lang_macro::{inline_macro, ProcMacroResult, TokenStream};
-use cairo_lang_parser::printer::print_tree;
 use cairo_lang_reader::syntax_file::TerminalEndOfFile;
 use cairo_lang_reader::{
     parse_token_stream_to_syntax_file, SyntaxElementTrait, TypedSyntaxElement,
@@ -10,6 +8,7 @@ use cairo_lang_reader::{
 use cairo_lang_syntax::node::ast;
 use starknet::core::types::Felt;
 use starknet_crypto::poseidon_hash_many;
+use std::vec;
 
 pub fn compute_bytearray_hash(value: &str) -> Felt {
     let ba = ByteArray::from_string(value).unwrap_or_else(|_| panic!("Invalid ByteArray: {value}"));
@@ -60,6 +59,6 @@ pub fn hash_byte_arrays(token_stream: TokenStream) -> ProcMacroResult {
         };
         hashes.push(compute_bytearray_hash(&quoted_content));
     }
-    let hash = poseidon_hash_many(&hashes);
-    ProcMacroResult::new(TokenStream::new(format!("{:?}", hash)))
+    let hash_string = format!("{:#64x}", poseidon_hash_many(&hashes));
+    ProcMacroResult::new(str_to_token_stream(&hash_string))
 }
