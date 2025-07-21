@@ -32,7 +32,7 @@ pub fn beacon_model(_attr: TokenStream, original: TokenStream) -> ProcMacroResul
         ]),
     );
     let mut builder = file.patch_builder();
-    
+
     builder.add_modified(RewriteNode::Text(remove_struct_derive(cairo_struct)));
     builder.add_modified(node);
 
@@ -40,22 +40,20 @@ pub fn beacon_model(_attr: TokenStream, original: TokenStream) -> ProcMacroResul
     ProcMacroResult::new(TokenStream::new(code.to_string()))
 }
 
-fn remove_struct_derive(node: Struct) -> String{
-    let visibility = match node.visibility(){
+fn remove_struct_derive(node: Struct) -> String {
+    let visibility = match node.visibility() {
         Visibility::Pub => "pub ",
         Visibility::Default => "",
     };
     let name = node.name();
-    let params: String = node.generic_params::<OptionWrappedGenericParamList>().get_text();
-    let members = node.get_child_syntax_element::<{Struct::INDEX_MEMBERS}>().get_text();
-    // members.text()
-    // let params = if  {
-    //     format!("<{}>", params)
-    // } else {
-    //     "".to_string()
-    // };
+    let params: String = node
+        .generic_params::<OptionWrappedGenericParamList>()
+        .get_text();
+    let members = node
+        .get_child_syntax_element::<{ Struct::INDEX_MEMBERS }>()
+        .get_text();
     format!(
-r#"{visibility}struct {name}{params} {{
+        r#"{visibility}struct {name}{params} {{
 {members}
 }}
 "#

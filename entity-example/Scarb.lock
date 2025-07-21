@@ -2,6 +2,11 @@
 version = 1
 
 [[package]]
+name = "alexandria_macros"
+version = "0.4.0"
+source = "git+https://github.com/keep-starknet-strange/alexandria?tag=v0.4.0#ae3d960589a2f0c9af5fbd9236f6f3eb39fea8ed"
+
+[[package]]
 name = "dojo"
 version = "1.6.0"
 source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0#c7d8b321abc711c14bddcf76f41587f6ef21c356"
@@ -13,6 +18,7 @@ dependencies = [
 name = "dojo_beacon_example"
 version = "0.1.0"
 dependencies = [
+ "alexandria_macros",
  "dojo",
  "sai_core_utils",
  "torii_beacon",

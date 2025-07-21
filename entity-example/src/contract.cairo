@@ -27,8 +27,7 @@ pub mod actions {
     use torii_beacon::{EmitterEvents, emitter_component};
     use super::{IActions, MySchema, MyTable};
     const NAMESPACE_HASH: felt252 = bytearray_hash!("my_ns");
-    const TABLE_ID: felt252 = selector_from_tag!("my_ns-my_table");
-
+    const TABLE_ID: felt252 = hash_byte_arrays!("my_ns", "my_table");
 
     component!(path: emitter_component, storage: emitter, event: EmitterEvents);
     impl Beacon = const_entity::ConstEntityEmitter<TABLE_ID, ContractState>;

@@ -1,11 +1,11 @@
 use cairo_lang_defs::patcher::RewriteNode;
 use cairo_lang_macro::{derive_macro, ProcMacroResult, TokenStream};
-use cairo_lang_reader::{item::Member, parse_token_stream_to_syntax_file, Item, SyntaxElementTrait};
+use cairo_lang_reader::{
+    item::Member, parse_token_stream_to_syntax_file, Item, SyntaxElementTrait,
+};
 use cairo_lang_utils::unordered_hash_map::UnorderedHashMap;
 use starknet::core::utils::get_selector_from_name;
 const SCHEMA_CODE_PATCH: &str = include_str!("./schema.patch.cairo");
-
-
 
 #[derive_macro]
 pub fn schema(token_stream: TokenStream) -> ProcMacroResult {
