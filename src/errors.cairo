@@ -1,4 +1,4 @@
-use core::{panics::panic_with_byte_array, never};
+use core::{never, panics::panic_with_byte_array};
 
 use starknet::ContractAddress;
 

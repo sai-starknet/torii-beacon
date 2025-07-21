@@ -2,18 +2,17 @@
 cairo-version = "2.11.4"
 edition = "2024_07"
 description = "The Dojo Beacon fort interfacing with Torii"
-name = "dojo_beacon"
-version = "0.2.3"
+name = "torii_beacon"
+version = "1.6.0-rc.0"
 experimental-features = ["negative_impls"]
 
 [dependencies]
 starknet = "2.11.4"
 dojo = { git = "https://github.com/dojoengine/dojo", rev = "1a93f26b416ef0278eab3aee65cbfc993934d8b5" }
-# dojo_macros = { git = "https://github.com/dojoengine/dojo", rev = "1a93f26b416ef0278eab3aee65cbfc993934d8b5" }
-
+sai_core_utils = { git = "https://github.com/sai-starknet/cairo-utils", tag = "cairo-2.11.4" }
+sai_access = { git = "https://github.com/sai-starknet/cairo-utils", tag = "cairo-2.11.4" }
 
 [dev-dependencies]
-# dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.5.0" }
 cairo_test = "2.11.4"
 
 [lib]
@@ -21,3 +20,6 @@ cairo_test = "2.11.4"
 [[target.starknet-contract]]
 sierra = true
 allowed-libfuncs-list.name = "experimental"
+
+[tool.fmt]
+sort-module-level-items = true

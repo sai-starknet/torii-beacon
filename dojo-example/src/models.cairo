@@ -8,7 +8,7 @@ pub struct Moved {
     pub direction: Direction,
 }
 
-#[derive(Copy, Drop, Serde, Debug, Schema)]
+#[derive(Copy, Drop, Serde, Debug)]
 #[dojo::model]
 pub struct Moves {
     #[key]

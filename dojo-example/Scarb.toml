@@ -1,0 +1,24 @@
+[package]
+cairo-version = "=2.10.1"
+edition = "2024_07"
+description = "The Dojo Beacon example"
+name = "dojo_beacon_example"
+version = "0.1.0"
+
+[dependencies]
+starknet = "=2.10.1"
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.6.0" }
+torii_beacon = { path = "../" }
+
+[dev-dependencies]
+dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.6.0" }
+cairo_test = "=2.10.1"
+
+[lib]
+
+[[target.starknet-contract]]
+sierra = true
+
+
+[tool.fmt]
+sort-module-level-items = true

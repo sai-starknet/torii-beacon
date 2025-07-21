@@ -3,30 +3,31 @@ version = 1
 
 [[package]]
 name = "dojo"
-<<<<<<< HEAD
-version = "1.6.0-alpha.1"
-source = "git+https://github.com/dojoengine/dojo?rev=1a93f26b416ef0278eab3aee65cbfc993934d8b5#1a93f26b416ef0278eab3aee65cbfc993934d8b5"
-=======
 version = "1.6.0"
 source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0#c7d8b321abc711c14bddcf76f41587f6ef21c356"
->>>>>>> 1.6.0-rc.0
 dependencies = [
- "dojo_macros",
+ "dojo_plugin",
 ]
 
 [[package]]
-<<<<<<< HEAD
-name = "dojo_beacon"
-version = "0.2.3"
+name = "dojo_beacon_example"
+version = "0.1.0"
+dependencies = [
+ "dojo",
+ "dojo_cairo_test",
+ "torii_beacon",
+ "torii_beacon_macros",
+]
+
+[[package]]
+name = "dojo_cairo_test"
+version = "1.6.0"
+source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0#c7d8b321abc711c14bddcf76f41587f6ef21c356"
 dependencies = [
  "dojo",
 ]
 
 [[package]]
-name = "dojo_macros"
-version = "1.6.0-alpha.1"
-source = "git+https://github.com/dojoengine/dojo?rev=1a93f26b416ef0278eab3aee65cbfc993934d8b5#1a93f26b416ef0278eab3aee65cbfc993934d8b5"
-=======
 name = "dojo_plugin"
 version = "2.10.1"
 source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0#c7d8b321abc711c14bddcf76f41587f6ef21c356"
@@ -43,10 +44,13 @@ source = "git+https://github.com/sai-starknet/cairo-utils?tag=cairo-2.10.1#73db8
 
 [[package]]
 name = "torii_beacon"
-version = "1.6.0-rc.0"
+version = "0.2.3"
 dependencies = [
  "dojo",
  "sai_access",
  "sai_core_utils",
 ]
->>>>>>> 1.6.0-rc.0
+
+[[package]]
+name = "torii_beacon_macros"
+version = "0.1.0"

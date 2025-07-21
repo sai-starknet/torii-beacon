@@ -1,4 +1,4 @@
-impl $struct_type$SchemaGeneratedImpl of dojo_beacon::dojo::schema::SchemaGenerated<$struct_type$>{
+impl $struct_type$SchemaGeneratedImpl of torii_beacon::dojo::schema::SchemaGenerated<$struct_type$>{
     fn serialize_values_to_array(self: @$struct_type$) -> Array<Span<felt252>>{
         let mut serialized_array = ArrayTrait::<Span<felt252>>::new();
 $serialize_members_to_array$
@@ -10,3 +10,5 @@ $member_selectors$
         ].span()
     }
 }
+
+

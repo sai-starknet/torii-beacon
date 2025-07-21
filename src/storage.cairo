@@ -1,6 +1,6 @@
-use core::{pedersen::PedersenTrait, hash::HashStateTrait};
-use core::poseidon::poseidon_hash_span;
 use core::num::traits::Zero;
+use core::poseidon::poseidon_hash_span;
+use core::{hash::HashStateTrait, pedersen::PedersenTrait};
 use starknet::{
     Store, SyscallResult, storage_access::{StorageBaseAddress, storage_base_address_from_felt252},
 };

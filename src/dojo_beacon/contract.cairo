@@ -1,7 +1,7 @@
 #[starknet::contract]
 mod beacon {
-    use dojo_beacon::{owners_component, writers_component, registry_component};
-    use dojo_beacon::beacon::{IBeacon, IdKeysValues, IdValues, IdValuesArray};
+    use crate::beacon::{IBeacon, IdKeysValues, IdValues, IdValuesArray};
+    use crate::{owners_component, registry_component, writers_component};
     use owners_component::OwnersInternal;
     use writers_component::WritersInternal;
 

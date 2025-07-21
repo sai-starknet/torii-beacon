@@ -1,6 +1,6 @@
+use crate::emitter::{EmitterState, HasEmitterComponent, ToriiEventEmitter};
 use dojo::model::Model;
-use dojo::utils::serialize_inline;
-use crate::emitter::{DojoEventEmitter, HasEmitterComponent, EmitterState};
+use sai_core_utils::SerdeAll;
 use super::traits::BeaconEmitterTrait;
 
 pub struct NsContractState<TState> {
@@ -39,7 +39,7 @@ pub impl StateNsBeaconEmitter<
         let mut emitter: EmitterState = self.contract_state.get_component_mut();
         emitter
             .emit_update_record(
-                Model::<M>::selector(self.namespace_hash), entity_id, serialize_inline(entity),
+                Model::<M>::selector(self.namespace_hash), entity_id, entity.serialize_all(),
             );
     }
     fn emit_entities<M, T, +Model<M>, +Serde<T>>(
@@ -48,7 +48,7 @@ pub impl StateNsBeaconEmitter<
         let mut emitter: EmitterState = self.contract_state.get_component_mut();
         let selector = Model::<M>::selector(self.namespace_hash);
         for (entity_id, entity) in entities {
-            emitter.emit_update_record(selector, entity_id, serialize_inline(entity));
+            emitter.emit_update_record(selector, entity_id, entity.serialize_all());
         }
     }
     fn emit_member<M, T, +Model<M>, +Serde<T>>(
@@ -60,7 +60,7 @@ pub impl StateNsBeaconEmitter<
                 Model::<M>::selector(self.namespace_hash),
                 entity_id,
                 member_selector,
-                serialize_inline(member),
+                member.serialize_all(),
             );
     }
     fn emit_members<M, T, +Model<M>, +Serde<T>>(
@@ -70,7 +70,7 @@ pub impl StateNsBeaconEmitter<
         let selector = Model::<M>::selector(self.namespace_hash);
         for (entity_id, member) in members {
             emitter
-                .emit_update_member(selector, entity_id, member_selector, serialize_inline(member));
+                .emit_update_member(selector, entity_id, member_selector, member.serialize_all());
         }
     }
     fn emit_model_members<M, T, +Model<M>, +Serde<T>>(
@@ -80,7 +80,7 @@ pub impl StateNsBeaconEmitter<
         let selector = Model::<M>::selector(self.namespace_hash);
         for (member_selector, member) in members {
             emitter
-                .emit_update_member(selector, entity_id, member_selector, serialize_inline(member));
+                .emit_update_member(selector, entity_id, member_selector, member.serialize_all());
         }
     }
     fn emit_delete_model<M, +Model<M>>(ref self: NsContractState<TState>, entity_id: felt252) {

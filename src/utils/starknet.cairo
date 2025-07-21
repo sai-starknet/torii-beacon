@@ -1,7 +1,7 @@
-use core::pedersen::pedersen;
 use core::num::traits::Zero;
+use core::pedersen::pedersen;
 
-use starknet::{ContractAddress, ClassHash, contract_address_const};
+use starknet::{ClassHash, ContractAddress, contract_address_const};
 
 use super::pedersen::{pedersen_array_hash, pedersen_fixed_array_hash};
 
@@ -36,4 +36,9 @@ pub fn calculate_contract_address(
     )
         .try_into()
         .unwrap()
+}
+
+
+pub fn calculate_utc_zero_address(class_hash: ClassHash) -> ContractAddress {
+    calculate_contract_address(contract_address_const::<0x0>(), 0x0, class_hash, [].span())
 }
