@@ -1,3 +1,3 @@
-pub mod hash_byte_arrays;
+pub mod bytearrays_hash;
 pub mod model;
 pub mod schema;

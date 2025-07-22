@@ -33,7 +33,7 @@ fn extract_quoted_string(input: &str) -> Result<String, &'static str> {
 }
 
 #[inline_macro]
-pub fn hash_byte_arrays(token_stream: TokenStream) -> ProcMacroResult {
+pub fn bytearrays_hash(token_stream: TokenStream) -> ProcMacroResult {
     // let db = SimpleParserDatabase::default();
     // let (root_node, _diagnostics) = db.parse_virtual_with_diagnostics(&token_stream);
     let (file, _) = parse_token_stream_to_syntax_file(token_stream);
