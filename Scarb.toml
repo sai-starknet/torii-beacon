@@ -6,6 +6,9 @@ name = "torii_beacon"
 version = "1.6.0-rc.0"
 experimental-features = ["negative_impls"]
 
+[workspace]
+members = ["macros"]
+
 [dependencies]
 starknet = "2.11.4"
 dojo = { git = "https://github.com/dojoengine/dojo" }
