@@ -2,7 +2,7 @@
 cairo-version = "2.10.1"
 edition = "2024_07"
 description = "The Dojo Beacon example"
-name = "dojo_beacon_example"
+name = "entity_beacon_example"
 version = "0.1.0"
 
 [dependencies]

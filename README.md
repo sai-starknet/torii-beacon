@@ -60,7 +60,7 @@ Or like this without dojo models:
 
 ```rust
 #[derive(Drop, Serde, Introspect)]
-#[beacon_model]
+#[beacon_entity]
 struct MyTable {
     pub value_1: u8,
     pub value_2: felt252,

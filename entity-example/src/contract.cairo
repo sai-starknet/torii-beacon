@@ -1,5 +1,5 @@
 #[derive(Drop, Serde, Introspect)]
-#[beacon_model]
+#[beacon_entity]
 struct MyTable {
     pub value_1: u8,
     pub value_2: felt252,
@@ -23,9 +23,9 @@ trait IActions<T> {
 #[starknet::contract]
 pub mod actions {
     use starknet::ClassHash;
-    use super::{IActions, MySchema, MyTable};
     use torii_beacon::emitter::const_entity;
     use torii_beacon::{EmitterEvents, emitter_component};
+    use super::{IActions, MySchema, MyTable};
     const NAMESPACE_HASH: felt252 = bytearray_hash!("my_ns");
     const TABLE_ID: felt252 = bytearrays_hash!("my_ns", "my_table");
 

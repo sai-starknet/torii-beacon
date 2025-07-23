@@ -2,7 +2,6 @@ use std::vec;
 
 use cainome::cairo_serde::{ByteArray, CairoSerde};
 use cairo_lang_macro::{inline_macro, ProcMacroResult, TokenStream};
-use cairo_lang_parser::printer::print_tree;
 use cairo_lang_reader::syntax_file::TerminalEndOfFile;
 use cairo_lang_reader::{
     parse_token_stream_to_syntax_file, SyntaxElementTrait, TypedSyntaxElement,

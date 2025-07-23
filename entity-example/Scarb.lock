@@ -15,7 +15,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "dojo_beacon_example"
+name = "dojo_plugin"
+version = "2.10.1"
+source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0#c7d8b321abc711c14bddcf76f41587f6ef21c356"
+
+[[package]]
+name = "entity_beacon_example"
 version = "0.1.0"
 dependencies = [
  "alexandria_macros",
@@ -24,11 +29,6 @@ dependencies = [
  "torii_beacon",
  "torii_beacon_macros",
 ]
-
-[[package]]
-name = "dojo_plugin"
-version = "2.10.1"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.6.0#c7d8b321abc711c14bddcf76f41587f6ef21c356"
 
 [[package]]
 name = "sai_access"

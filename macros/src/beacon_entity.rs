@@ -7,10 +7,10 @@ use cairo_lang_utils::unordered_hash_map::UnorderedHashMap;
 use convert_case::{Case, Casing};
 
 pub const MODEL_ATTRIBUTE_MACRO: &str = "Model";
-const MODEL_CODE_PATCH: &str = include_str!("./model.patch.cairo");
+const MODEL_CODE_PATCH: &str = include_str!("./beacon_entity.patch.cairo");
 
 #[attribute_macro]
-pub fn beacon_model(_attr: TokenStream, original: TokenStream) -> ProcMacroResult {
+pub fn beacon_entity(_attr: TokenStream, original: TokenStream) -> ProcMacroResult {
     let (file, _) = parse_token_stream_to_syntax_file(original);
     let mut diagnostics = vec![];
     let cairo_struct = match file.item() {
