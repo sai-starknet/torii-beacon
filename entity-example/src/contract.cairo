@@ -1,5 +1,5 @@
 #[derive(Drop, Serde, Introspect, Copy, Debug, Schema, PartialEq)]
-#[beacon_model]
+#[beacon_entity]
 struct MyTable {
     pub value_1: u8,
     pub value_2: felt252,

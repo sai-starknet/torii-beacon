@@ -10,11 +10,10 @@ use cairo_lang_utils::unordered_hash_map::UnorderedHashMap;
 use convert_case::{Case, Casing};
 
 const DERIVE_ATTR: &str = "derive";
-pub const MODEL_ATTRIBUTE_MACRO: &str = "Model";
-const MODEL_CODE_PATCH: &str = include_str!("./model.patch.cairo");
+const BEACON_ENTITY_CODE_PATCH: &str = include_str!("./beacon_entity.patch.cairo");
 
 #[attribute_macro]
-pub fn beacon_model(_attr: TokenStream, original: TokenStream) -> ProcMacroResult {
+pub fn beacon_entity(_attr: TokenStream, original: TokenStream) -> ProcMacroResult {
     let (file, _) = parse_token_stream_to_syntax_file(original);
     let mut diagnostics = vec![];
     let cairo_struct = match file.item() {
@@ -26,7 +25,7 @@ pub fn beacon_model(_attr: TokenStream, original: TokenStream) -> ProcMacroResul
     };
     let name = cairo_struct.name();
     let node: RewriteNode = RewriteNode::interpolate_patched(
-        MODEL_CODE_PATCH,
+        BEACON_ENTITY_CODE_PATCH,
         &UnorderedHashMap::from([
             ("model_type".to_string(), RewriteNode::Text(name.clone())),
             (

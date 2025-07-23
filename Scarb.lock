@@ -33,3 +33,7 @@ dependencies = [
  "sai_access",
  "sai_core_utils",
 ]
+
+[[package]]
+name = "torii_beacon_macros"
+version = "0.1.0"
