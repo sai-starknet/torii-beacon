@@ -45,6 +45,7 @@ pub fn bytearrays_hash(token_stream: TokenStream) -> ProcMacroResult {
         .trim_matches(|c| c == '(' || c == ')')
         .split(',')
         .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
         .collect();
 
     let mut hashes: Vec<Felt> = vec![];
