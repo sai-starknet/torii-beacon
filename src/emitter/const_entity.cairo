@@ -1,12 +1,10 @@
 use sai_core_utils::SerdeAll;
-use starknet::ClassHash;
 use crate::HasEmitterComponent;
 use crate::emitter::ToriiEventEmitter;
 use crate::schema::Schema;
-use crate::utils::calculate_utc_zero_address;
 
 mod traits {
-    use super::{ClassHash, Schema};
+    use super::Schema;
     /// Trait defining methods for emitting events to Torii indexer without requiring a full Dojo
     /// world.
     /// This version uses a constant TABLE parameter for compile-time table specification.
@@ -16,14 +14,6 @@ mod traits {
     /// - entity_id: Identifier for the row
     /// - Data can be: entity (full row), member (single cell), or schema (multiple cells)
     pub trait ConstEntityEmitterTrait<TState> {
-        /// Emits an event for registering a new model
-        /// * Args:
-        ///     * `namespace` - The namespace identifier for the model
-        ///     * `name` - The name of the model
-        ///     * `class_hash` - The hash representing the model's class
-        fn emit_register_model(
-            ref self: TState, namespace: ByteArray, name: ByteArray, class_hash: ClassHash,
-        );
         /// Emits an event for a single entity (full row of data)
         /// * Args:
         ///     * `entity_id` - Identifier for the row
@@ -69,14 +59,6 @@ mod traits {
 pub impl ConstEntityEmitter<
     const TABLE: felt252, TState, +HasEmitterComponent<TState>, +Drop<TState>,
 > of traits::ConstEntityEmitterTrait<TState> {
-    fn emit_register_model(
-        ref self: TState, namespace: ByteArray, name: ByteArray, class_hash: ClassHash,
-    ) {
-        self
-            .emit_model_registered(
-                namespace, name, calculate_utc_zero_address(class_hash), class_hash,
-            );
-    }
     fn emit_entity<E, +Serde<E>>(ref self: TState, entity_id: felt252, entity: @E) {
         self.emit_update_record(TABLE, entity_id, entity.serialize_all());
     }

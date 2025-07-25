@@ -1,3 +1,21 @@
+use starknet::ClassHash;
+use crate::utils::calculate_utc_zero_address;
+
+#[generate_trait]
+pub impl ToriiRegistryEmitterImpl<
+    TState, +super::HasEmitterComponent<TState>, +Drop<TState>,
+> of ToriiRegistryEmitter<TState> {
+    fn emit_register_entity(
+        ref self: TState, namespace: ByteArray, name: ByteArray, class_hash: ClassHash,
+    ) {
+        self
+            .emit_model_registered(
+                namespace, name, calculate_utc_zero_address(class_hash), class_hash,
+            );
+    }
+}
+use emitter_component::ToriiEventEmitter;
+
 #[starknet::component]
 pub mod emitter_component {
     use dojo::world::world::{

@@ -9,8 +9,8 @@ pub mod emitter {
     pub mod component;
     pub mod const_entity;
     pub mod entity;
-
-    pub use component::emitter_component;
+    pub mod syscalls;
+    pub use component::{ToriiRegistryEmitter, emitter_component};
     pub use emitter_component::{
         ComponentState as EmitterState, Event as EmitterEvents, HasComponent as HasEmitterComponent,
         ToriiEventEmitter,

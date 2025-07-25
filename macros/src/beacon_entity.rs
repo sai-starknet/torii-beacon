@@ -48,7 +48,7 @@ fn remove_struct_derive(node: Struct) -> String {
         .query_attr(DERIVE_ATTR)
         .iter()
         .flat_map(|attr| attr.arguments())
-        .map(|arg| arg.get_text())
+        .map(|arg| arg.get_text().trim().to_string())
         .filter(|arg| match arg.as_str() {
             "Copy" | "Drop" | "Clone" | "Debug" | "Default" | "Destruct" | "Hash"
             | "PanicDestruct" | "PartialEq" | "Serde" => false,
@@ -60,7 +60,6 @@ fn remove_struct_derive(node: Struct) -> String {
     } else {
         format!("#[{}({})]\n", DERIVE_ATTR, attributes.join(", "))
     };
-
     let visibility = match node.visibility() {
         Visibility::Pub => "pub ",
         Visibility::Default => "",
