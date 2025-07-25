@@ -1,0 +1,20 @@
+[package]
+name = "beacon_library"
+version.workspace = true
+edition.workspace = true
+cairo-version.workspace = true
+scarb-version.workspace = true
+repository.workspace = true
+
+[dependencies]
+starknet.workspace = true
+sai_core_utils.workspace = true
+beacon_schema = { path = "../schema" }
+
+[dev-dependencies]
+
+[tool]
+fmt.workspace = true
+scarb.workspace = true
+
+[lib]

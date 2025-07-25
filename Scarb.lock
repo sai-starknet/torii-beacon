@@ -2,37 +2,25 @@
 version = 1
 
 [[package]]
-name = "dojo"
-version = "1.6.0-alpha.1"
-source = "git+https://github.com/dojoengine/dojo#c876437d20b101e051656fa846288340b65612bc"
+name = "beacon_library"
+version = "1.7.0-rc.0"
 dependencies = [
- "dojo_macros",
+ "beacon_schema",
+ "sai_core_utils",
 ]
 
 [[package]]
-name = "dojo_macros"
-version = "1.6.0-alpha.1"
-source = "git+https://github.com/dojoengine/dojo#c876437d20b101e051656fa846288340b65612bc"
-
-[[package]]
-name = "sai_access"
-version = "0.1.0"
-source = "git+https://github.com/sai-starknet/cairo-utils?branch=cairo-2.11.4#ef1fa4bd72ade1e8f38fc84646d6422f09821df2"
+name = "beacon_schema"
+version = "1.7.0-rc.0"
 
 [[package]]
 name = "sai_core_utils"
 version = "0.1.0"
-source = "git+https://github.com/sai-starknet/cairo-utils?branch=cairo-2.11.4#ef1fa4bd72ade1e8f38fc84646d6422f09821df2"
+source = "git+https://github.com/sai-starknet/cairo-utils?branch=cairo-2.11.4#3565ddb994671bf424c25212180aba452d5eb946"
 
 [[package]]
 name = "torii_beacon"
-version = "1.6.0-rc.0"
-dependencies = [
- "dojo",
- "dojo_macros",
- "sai_access",
- "sai_core_utils",
-]
+version = "1.7.0-rc.0"
 
 [[package]]
 name = "torii_beacon_macros"

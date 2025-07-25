@@ -26,7 +26,7 @@ source = "git+https://github.com/sai-starknet/cairo-utils?branch=cairo-2.11.4#ef
 
 [[package]]
 name = "torii_beacon"
-version = "1.6.0-rc.0"
+version = "1.7.0-rc.0"
 dependencies = [
  "dojo",
  "dojo_macros",
