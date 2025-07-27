@@ -89,3 +89,10 @@ pub impl ConstEntityEmitter<const TABLE: felt252> of ConstSysEntityEmitterTrait 
         }
     }
 }
+
+
+const TABLE_ID: felt252 = bytearrays_hash!("my_ns", "my_table");
+impl ATableEmitter = ConstEntityEmitter<TABLE_ID>;
+
+ATableEmitter::emit_entity(12, my_entity);
+self.emit_entity

@@ -53,6 +53,7 @@ pub mod actions {
         positions_class_hash: ClassHash,
         moved_class_hash: ClassHash,
     ) {
+        self.emit()
         self.emit_register_model("my_ns", "my_table", model_class_hash);
     }
 
