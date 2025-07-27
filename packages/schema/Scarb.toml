@@ -8,6 +8,7 @@ repository.workspace = true
 
 [dependencies]
 starknet.workspace = true
+sai_core_utils.workspace = true
 
 [dev-dependencies]
 

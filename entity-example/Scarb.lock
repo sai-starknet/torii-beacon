@@ -2,6 +2,18 @@
 version = 1
 
 [[package]]
+name = "beacon_library"
+version = "1.7.0-rc.0"
+dependencies = [
+ "beacon_schema",
+ "sai_core_utils",
+]
+
+[[package]]
+name = "beacon_schema"
+version = "1.7.0-rc.0"
+
+[[package]]
 name = "dojo"
 version = "1.6.0-alpha.1"
 source = "git+https://github.com/dojoengine/dojo#c876437d20b101e051656fa846288340b65612bc"
@@ -22,6 +34,10 @@ source = "git+https://github.com/sai-starknet/cairo-utils?branch=cairo-2.11.4#ef
 [[package]]
 name = "torii_beacon"
 version = "1.7.0-rc.0"
+dependencies = [
+ "beacon_library",
+ "beacon_schema",
+]
 
 [[package]]
 name = "torii_beacon_example"

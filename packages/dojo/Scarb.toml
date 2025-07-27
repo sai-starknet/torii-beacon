@@ -1,5 +1,5 @@
 [package]
-name = "beacon_library"
+name = "dojo_beacon"
 version.workspace = true
 edition.workspace = true
 cairo-version.workspace = true
@@ -11,6 +11,7 @@ starknet.workspace = true
 sai_core_utils.workspace = true
 sai_address.workspace = true
 beacon_schema = { path = "../schema" }
+beacon_component = { path = "../component" }
 
 [dev-dependencies]
 

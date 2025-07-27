@@ -15,7 +15,15 @@ scarb-version.workspace = true
 description.workspace = true
 
 [workspace]
-members = ["macros", "packages/schema", "packages/library"]
+members = [
+    "macros",
+    "packages/schema",
+    "packages/library",
+    "packages/component",
+    "packages/dojo",
+    "packages/macros",
+    "packages/entity",
+]
 
 [workspace.dependencies]
 starknet = "2.11.4"
@@ -23,6 +31,7 @@ dojo = { git = "https://github.com/dojoengine/dojo" }
 dojo_macros = { git = "https://github.com/dojoengine/dojo" }
 sai_core_utils = { git = "https://github.com/sai-starknet/cairo-utils", branch = "cairo-2.11.4" }
 sai_access = { git = "https://github.com/sai-starknet/cairo-utils", branch = "cairo-2.11.4" }
+sai_address = { git = "https://github.com/sai-starknet/cairo-utils", branch = "cairo-2.11.4" }
 
 [workspace.tool.fmt]
 sort-module-level-items = true
@@ -30,6 +39,14 @@ sort-module-level-items = true
 [workspace.tool.scarb]
 allow-prebuilt-plugins = ["snforge_std"]
 
+[dependencies]
+starknet = "2.11.4"
+beacon_schema = { path = "packages/schema" }
+beacon_library = { path = "packages/library" }
+beacon_component = { path = "packages/component" }
+dojo_beacon = { path = "packages/dojo" }
+beacon_macros = { path = "packages/macros" }
+beacon_entity = { path = "packages/entity" }
 
 [dev-dependencies]
 cairo_test = "2.11.4"

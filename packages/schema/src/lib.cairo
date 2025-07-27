@@ -1,3 +1,6 @@
+mod external {
+    pub use sai_core_utils::SerdeAll;
+}
 pub trait Schema<S> {
     fn serialize_values_to_array(self: @S) -> Array<Span<felt252>>;
     fn serialize_values_and_members(

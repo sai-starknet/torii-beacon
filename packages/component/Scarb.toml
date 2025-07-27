@@ -1,5 +1,5 @@
 [package]
-name = "beacon_library"
+name = "beacon_component"
 version.workspace = true
 edition.workspace = true
 cairo-version.workspace = true

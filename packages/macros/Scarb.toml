@@ -1,0 +1,9 @@
+[package]
+name = "beacon_macros"
+version.workspace = true
+edition.workspace = true
+cairo-version.workspace = true
+scarb-version.workspace = true
+repository.workspace = true
+
+[cairo-plugin]

@@ -1,0 +1,28 @@
+[package]
+cairo-version = "2.11.4"
+edition = "2024_07"
+description = "The Torii Beacon example"
+name = "torii_beacon_example"
+version = "0.1.0"
+
+[dependencies]
+starknet = "2.11.4"
+dojo = { git = "https://github.com/dojoengine/dojo" }
+dojo_macros = { git = "https://github.com/dojoengine/dojo" }
+beacon_library = { path = "../../" }
+beacon_macros = { path = "../../" }
+beacon_entity = { path = "../../" }
+sai_core_utils = { git = "https://github.com/sai-starknet/cairo-utils", branch = "cairo-2.11.4" }
+
+[dev-dependencies]
+# dojo_cairo_test = { git = "https://github.com/dojoengine/dojo", tag = "v1.6.0" }
+cairo_test = "2.11.4"
+
+[lib]
+
+[[target.starknet-contract]]
+sierra = true
+
+
+[tool.fmt]
+sort-module-level-items = true
