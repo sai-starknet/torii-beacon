@@ -1,9 +1,18 @@
+use dojo::meta::introspect::Struct;
 use sai_core_utils::SerdeAll;
 use starknet::syscalls::emit_event_syscall;
 use starknet::{ClassHash, ContractAddress, SyscallResultTrait};
 
 pub fn emit_namespace_registered(namespace: ByteArray, hash: felt252) {
     emit_event_syscall((selector!(""), namespace).serialize_all(), [hash].span()).unwrap_syscall();
+}
+
+pub fn emit_model_with_schema_registered(namespace: ByteArray, name: ByteArray, schema: Struct) {
+    emit_event_syscall(
+        (selector!("ModelWithSchemaRegistered"), name, namespace).serialize_all(),
+        schema.serialize_all(),
+    )
+        .unwrap_syscall();
 }
 
 pub fn emit_model_registered(

@@ -22,6 +22,7 @@ trait IActions<T> {
 
 #[starknet::contract]
 pub mod actions {
+    use beacon_component::beacon_component;
     use beacon_library::{ToriiTable, register_table, set_entity};
     use starknet::ClassHash;
     use super::{IActions, MySchema, MyTable};
@@ -39,8 +40,8 @@ pub mod actions {
 
     #[constructor]
     fn constructor(ref self: ContractState, class_hash: ClassHash) {
-        register_table("my_ns", "my_table_1", class_hash);
-        register_table("my_other_ns", "my_table_2", class_hash);
+        self.register_table("my_ns", "my_table_1", class_hash);
+        self.register_table("my_other_ns", "my_table_2", class_hash);
     }
 
     #[abi(embed_v0)]

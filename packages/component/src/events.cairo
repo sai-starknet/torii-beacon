@@ -1,4 +1,14 @@
+use dojo::meta::introspect::Struct;
 use starknet::{ClassHash, ContractAddress};
+
+#[derive(Drop, starknet::Event)]
+pub struct ModelWithSchemaRegistered {
+    #[key]
+    pub name: ByteArray,
+    #[key]
+    pub namespace: ByteArray,
+    pub schema: Struct,
+}
 
 #[derive(Drop, starknet::Event)]
 pub struct ModelRegistered {

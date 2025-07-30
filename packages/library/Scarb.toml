@@ -10,7 +10,9 @@ repository.workspace = true
 starknet.workspace = true
 sai_core_utils.workspace = true
 sai_address.workspace = true
+dojo.workspace = true
 beacon_schema = { path = "../schema" }
+
 
 [dev-dependencies]
 

@@ -1,14 +1,25 @@
 use beacon_schema::Schema;
+use dojo::meta::{Introspect, Ty};
 use sai_address::calculate_utc_zero_address;
 use sai_core_utils::SerdeAll;
 use starknet::ClassHash;
 use super::syscalls::{
-    emit_delete_record, emit_model_registered, emit_update_member, emit_update_record,
+    emit_delete_record, emit_model_registered, emit_model_with_schema_registered,
+    emit_update_member, emit_update_record,
 };
 
 pub fn register_table(namespace: ByteArray, name: ByteArray, class_hash: ClassHash) {
     let address = calculate_utc_zero_address(class_hash, [].span());
-    emit_model_registered(name, namespace, address, class_hash);
+    emit_model_registered(namespace, name, address, class_hash);
+}
+
+pub fn register_table_with_schema<E, +Introspect<E>>(namespace: ByteArray, name: ByteArray) {
+    let schema = if let Ty::Struct(s) = Introspect::<E>::ty() {
+        s
+    } else {
+        panic!("Expected a struct type for schema")
+    };
+    emit_model_with_schema_registered(namespace, name, schema);
 }
 
 pub fn set_entity<I, E, +Into<I, felt252>, +Serde<E>>(table: felt252, entity_id: I, entity: @E) {
@@ -23,17 +34,17 @@ pub fn set_entities<I, E, +Drop<I>, +Into<I, felt252>, +Serde<E>>(
     }
 }
 
-pub fn set_member<I, T, +Into<I, felt252>, +Serde<T>>(
-    table: felt252, member_id: felt252, entity_id: I, entity: @T,
+pub fn set_member<const MEMBER_ID: felt252, I, T, +Into<I, felt252>, +Serde<T>>(
+    table: felt252, entity_id: I, entity: @T,
 ) {
-    emit_update_member(table, member_id, entity_id.into(), entity.serialize_all());
+    emit_update_member(table, MEMBER_ID, entity_id.into(), entity.serialize_all());
 }
 
-pub fn set_models_member<I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
-    table: felt252, member_id: felt252, entities: Array<(I, @T)>,
+pub fn set_models_member<const MEMBER_ID: felt252, I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
+    table: felt252, entities: Array<(I, @T)>,
 ) {
     for (entity_id, entity) in entities {
-        emit_update_member(table, member_id, entity_id.into(), entity.serialize_all());
+        emit_update_member(table, MEMBER_ID, entity_id.into(), entity.serialize_all());
     }
 }
 

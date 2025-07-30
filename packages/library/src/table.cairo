@@ -29,16 +29,16 @@ trait ToriiTableTrait {
     ///     * `member_id` - Identifier for the specific field/column
     ///     * `entity_id` - Identifier for the row
     ///     * `entity` - A single cell of data to emit
-    fn set_member<I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
-        member_id: felt252, entity_id: I, entity: @T,
+    fn set_member<const MEMBER_ID: felt252, I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
+        entity_id: I, entity: @T,
     );
 
     /// Emits events for multiple members (single cells of data)
     /// * Args:
     ///     * `member_id` - Identifier for the specific field/column
     ///     * `entities` - Array of single cells of data to emit
-    fn set_models_member<I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
-        member_id: felt252, entities: Array<(I, @T)>,
+    fn set_models_member<const MEMBER_ID: felt252, I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
+        entities: Array<(I, @T)>,
     );
 
     /// Emits an event for a single schema (multiple cells of data)
@@ -71,16 +71,16 @@ pub impl ToriiTable<const TABLE: felt252> of ToriiTableTrait {
         set_entities(TABLE, entities);
     }
 
-    fn set_member<I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
-        member_id: felt252, entity_id: I, entity: @T,
+    fn set_member<const MEMBER_ID: felt252, I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
+        entity_id: I, entity: @T,
     ) {
-        set_member(TABLE, member_id, entity_id, entity);
+        set_member::<MEMBER_ID>(TABLE, entity_id, entity);
     }
 
-    fn set_models_member<I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
-        member_id: felt252, entities: Array<(I, @T)>,
+    fn set_models_member<const MEMBER_ID: felt252, I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
+        entities: Array<(I, @T)>,
     ) {
-        set_models_member(TABLE, member_id, entities);
+        set_models_member::<MEMBER_ID>(TABLE, entities);
     }
 
     fn set_schema<I, S, +Drop<I>, +Into<I, felt252>, +Schema<S>>(entity_id: I, schema: @S) {

@@ -2,11 +2,61 @@
 version = 1
 
 [[package]]
+name = "beacon_component"
+version = "1.7.0-rc.0"
+dependencies = [
+ "beacon_schema",
+ "dojo",
+ "sai_address",
+ "sai_core_utils",
+]
+
+[[package]]
+name = "beacon_entity"
+version = "1.7.0-rc.0"
+dependencies = [
+ "beacon_schema",
+ "dojo",
+ "sai_core_utils",
+]
+
+[[package]]
+name = "beacon_library"
+version = "1.7.0-rc.0"
+dependencies = [
+ "beacon_schema",
+ "dojo",
+ "sai_address",
+ "sai_core_utils",
+]
+
+[[package]]
+name = "beacon_macros"
+version = "1.7.0-rc.0"
+
+[[package]]
+name = "beacon_schema"
+version = "1.7.0-rc.0"
+dependencies = [
+ "sai_core_utils",
+]
+
+[[package]]
 name = "dojo"
 version = "1.6.0-alpha.1"
 source = "git+https://github.com/dojoengine/dojo#c876437d20b101e051656fa846288340b65612bc"
 dependencies = [
  "dojo_macros",
+]
+
+[[package]]
+name = "dojo_beacon"
+version = "1.7.0-rc.0"
+dependencies = [
+ "beacon_component",
+ "beacon_schema",
+ "sai_address",
+ "sai_core_utils",
 ]
 
 [[package]]
@@ -24,5 +74,26 @@ version = "1.6.0-alpha.1"
 source = "git+https://github.com/dojoengine/dojo#c876437d20b101e051656fa846288340b65612bc"
 
 [[package]]
+name = "sai_address"
+version = "0.1.0"
+source = "git+https://github.com/sai-starknet/cairo-utils?branch=cairo-2.11.4#7061385cdf56b78bbc8f8496c032ba08eeedc7a0"
+dependencies = [
+ "sai_core_utils",
+]
+
+[[package]]
+name = "sai_core_utils"
+version = "0.1.0"
+source = "git+https://github.com/sai-starknet/cairo-utils?branch=cairo-2.11.4#7061385cdf56b78bbc8f8496c032ba08eeedc7a0"
+
+[[package]]
 name = "torii_beacon"
 version = "1.7.0-rc.0"
+dependencies = [
+ "beacon_component",
+ "beacon_entity",
+ "beacon_library",
+ "beacon_macros",
+ "beacon_schema",
+ "dojo_beacon",
+]

@@ -1,0 +1,25 @@
+[account]
+rpc_url = "http://localhost:5050/"
+account_address = "0x2af9427c5a277474c079a1283c880ee8a6f0f8fbf73ce969c08d88befec1bba"
+private_key = "0x1800000000300000180000000000030000000000003006001800006600"
+
+[declare.m_MyTable]
+
+[deploy.m_MyTable]
+class = "m_MyTable" # can either be a tag of a declared contract or a
+salt = "0x0"
+unique = false
+calldata = []
+
+[declare.example]
+
+[deploy.example]
+class = "example" # can either be a tag of a declared contract or a                                    
+salt = "0x0"
+unique = false
+calldata = ["0x8a751b7d1c3276780bcee3b3e89f8d84946a54896b286dd7d811d71de540a0"]
+
+
+[dojo]
+models = "all"
+events = []

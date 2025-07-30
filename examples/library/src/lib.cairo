@@ -21,8 +21,9 @@ trait IActions<T> {
 }
 
 #[starknet::contract]
-pub mod actions {
-    use beacon_library::{ToriiTable, register_table, set_entity};
+pub mod example {
+    use beacon_library::torii::{register_table, register_table_with_schema};
+    use beacon_library::{ToriiTable, set_entity, set_member, set_schema};
     use starknet::ClassHash;
     use super::{IActions, MySchema, MyTable};
     const TABLE_1_ID: felt252 = bytearrays_hash!("my_ns", "my_table_1");
@@ -39,8 +40,10 @@ pub mod actions {
 
     #[constructor]
     fn constructor(ref self: ContractState, class_hash: ClassHash) {
-        register_table("my_ns", "my_table_1", class_hash);
         register_table("my_other_ns", "my_table_2", class_hash);
+        register_table_with_schema::<MyTable>("my_ns", "my_table_1");
+        Table::set_entity(1, @MyTable { value_1: 42, value_2: 1, value_3: 2, value_4: 3 });
+        set_entity(TABLE_2_ID, 1, @MyTable { value_1: 42, value_2: 1, value_3: 2, value_4: 5 });
     }
 
     #[abi(embed_v0)]
@@ -50,6 +53,7 @@ pub mod actions {
             let my_table_2 = MyTable { value_1: 42, value_2: 100, value_3: 200, value_4: 300 };
             Table::set_entity(12, @my_table_1);
             set_entity(TABLE_2_ID, 42, @my_table_2);
+            set_member(TABLE_1_ID, selector!("value_1"), 12, 100);
         }
 
         fn update_entity(ref self: ContractState) {

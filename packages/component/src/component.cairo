@@ -1,3 +1,4 @@
+use dojo::meta::{Introspect, Ty};
 use sai_address::calculate_utc_zero_address;
 use starknet::ClassHash;
 
@@ -13,14 +14,27 @@ pub impl ToriiRegistryEmitterImpl<
                 namespace, name, calculate_utc_zero_address(class_hash, [].span()), class_hash,
             );
     }
+
+    fn emit_register_entity_with_schema<E, +Introspect<E>>(
+        ref self: TState, namespace: ByteArray, name: ByteArray,
+    ) {
+        let schema = if let Ty::Struct(s) = Introspect::<E>::ty() {
+            s
+        } else {
+            panic!("Expected a struct type for schema")
+        };
+        self.emit_model_with_schema_registered(name, namespace, schema);
+    }
 }
 use emitter_component::ToriiEventEmitter;
 
 #[starknet::component]
 pub mod emitter_component {
+    use dojo::meta::introspect::Struct;
     use starknet::{ClassHash, ContractAddress};
     use crate::events::{
-        ModelRegistered, StoreDelRecord, StoreSetRecord, StoreUpdateMember, StoreUpdateRecord,
+        ModelRegistered, ModelWithSchemaRegistered, StoreDelRecord, StoreSetRecord,
+        StoreUpdateMember, StoreUpdateRecord,
     };
 
     #[storage]
@@ -30,6 +44,7 @@ pub mod emitter_component {
     #[derive(Drop, starknet::Event)]
     pub enum Event {
         ModelRegistered: ModelRegistered,
+        ModelWithSchemaRegistered: ModelWithSchemaRegistered,
         StoreSetRecord: StoreSetRecord,
         StoreUpdateRecord: StoreUpdateRecord,
         StoreUpdateMember: StoreUpdateMember,
@@ -43,6 +58,9 @@ pub mod emitter_component {
             namespace: ByteArray,
             address: ContractAddress,
             class_hash: ClassHash,
+        );
+        fn emit_model_with_schema_registered(
+            ref self: TState, name: ByteArray, namespace: ByteArray, schema: Struct,
         );
         fn emit_set_record(
             ref self: TState,
@@ -75,6 +93,15 @@ pub mod emitter_component {
             class_hash: ClassHash,
         ) {
             self.emit(ModelRegistered { name, namespace, address, class_hash });
+        }
+
+        fn emit_model_with_schema_registered(
+            ref self: ComponentState<TContractState>,
+            name: ByteArray,
+            namespace: ByteArray,
+            schema: Struct,
+        ) {
+            self.emit(ModelWithSchemaRegistered { name, namespace, schema });
         }
 
         fn emit_set_record(
@@ -126,6 +153,13 @@ pub mod emitter_component {
         ) {
             let mut contract = self.get_component_mut();
             contract.emit(ModelRegistered { name, namespace, address, class_hash });
+        }
+
+        fn emit_model_with_schema_registered(
+            ref self: TContractState, name: ByteArray, namespace: ByteArray, schema: Struct,
+        ) {
+            let mut contract = self.get_component_mut();
+            contract.emit(ModelWithSchemaRegistered { name, namespace, schema });
         }
         fn emit_set_record(
             ref self: TContractState,

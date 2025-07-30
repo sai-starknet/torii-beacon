@@ -1,0 +1,10 @@
+# The World address to index.
+world_address = "0x51bb034c9d5da293b771ed070d673caf97577ff03097ef370d860b8bdb1b29e"
+
+# Default RPC URL configuration
+rpc = "http://127.0.0.1:5050"
+
+# Database configuration
+# Optional: If not specified, uses in-memory database
+db_dir = "torii/dev"
+

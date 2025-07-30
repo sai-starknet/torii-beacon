@@ -15,6 +15,7 @@ name = "beacon_library"
 version = "1.7.0-rc.0"
 dependencies = [
  "beacon_schema",
+ "dojo",
  "sai_address",
  "sai_core_utils",
 ]

@@ -12,6 +12,7 @@ dojo_macros = { git = "https://github.com/dojoengine/dojo" }
 beacon_library = { path = "../../" }
 beacon_macros = { path = "../../" }
 beacon_entity = { path = "../../" }
+beacon_component = { path = "../../" }
 sai_core_utils = { git = "https://github.com/sai-starknet/cairo-utils", branch = "cairo-2.11.4" }
 
 [dev-dependencies]
