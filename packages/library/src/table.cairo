@@ -17,40 +17,40 @@ trait ToriiTableTrait {
     /// * Args:
     ///     * `entity_id` - Identifier for the row
     ///     * `entity` - A complete row of data to emit
-    fn set_entity<I, E, +Drop<I>, +Into<I, felt252>, +Serde<E>>(entity_id: I, entity: @E);
+    fn set_entity<E, I, +Drop<I>, +Into<I, felt252>, +Serde<E>>(entity_id: I, entity: @E);
 
     /// Emits events for multiple entities (full rows of data)
     /// * Args:
     ///     * `entities` - Array of complete rows of data to emit
-    fn set_entities<I, E, +Drop<I>, +Into<I, felt252>, +Serde<E>>(entities: Array<(I, @E)>);
+    fn set_entities<E, I, +Drop<I>, +Into<I, felt252>, +Serde<E>>(entities: Array<(I, @E)>);
 
     /// Emits an event for a single member (single cell of data)
     /// * Args:
     ///     * `member_id` - Identifier for the specific field/column
     ///     * `entity_id` - Identifier for the row
     ///     * `entity` - A single cell of data to emit
-    fn set_member<const MEMBER_ID: felt252, I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
-        entity_id: I, entity: @T,
+    fn set_member<T, I, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
+        member_id: felt252, entity_id: I, entity: @T,
     );
 
     /// Emits events for multiple members (single cells of data)
     /// * Args:
     ///     * `member_id` - Identifier for the specific field/column
     ///     * `entities` - Array of single cells of data to emit
-    fn set_models_member<const MEMBER_ID: felt252, I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
-        entities: Array<(I, @T)>,
+    fn set_models_member<T, I, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
+        member_id: felt252, entities: Array<(I, @T)>,
     );
 
     /// Emits an event for a single schema (multiple cells of data)
     /// * Args:
     ///     * `entity_id` - Identifier for the row
     ///     * `schema` - Multiple cells of data to emit as schema
-    fn set_schema<I, S, +Drop<I>, +Into<I, felt252>, +Schema<S>>(entity_id: I, schema: @S);
+    fn set_schema<S, I, +Drop<I>, +Into<I, felt252>, +Schema<S>>(entity_id: I, schema: @S);
 
     /// Emits events for multiple schemas (multiple cells of data)
     /// * Args:
     ///     * `schemas` - Array of schema data with multiple cells to emit
-    fn set_schemas<I, S, +Drop<I>, +Into<I, felt252>, +Schema<S>>(schemas: Array<(I, @S)>);
+    fn set_schemas<S, I, +Drop<I>, +Into<I, felt252>, +Schema<S>>(schemas: Array<(I, @S)>);
     /// Emits an event to delete an entity
     /// * Args:
     ///     * `entity_id` - Identifier for the row to delete
@@ -63,31 +63,31 @@ trait ToriiTableTrait {
 }
 
 pub impl ToriiTable<const TABLE: felt252> of ToriiTableTrait {
-    fn set_entity<I, E, +Drop<I>, +Into<I, felt252>, +Serde<E>>(entity_id: I, entity: @E) {
+    fn set_entity<E, I, +Drop<I>, +Into<I, felt252>, +Serde<E>>(entity_id: I, entity: @E) {
         set_entity(TABLE, entity_id, entity);
     }
 
-    fn set_entities<I, E, +Drop<I>, +Into<I, felt252>, +Serde<E>>(entities: Array<(I, @E)>) {
+    fn set_entities<E, I, +Drop<I>, +Into<I, felt252>, +Serde<E>>(entities: Array<(I, @E)>) {
         set_entities(TABLE, entities);
     }
 
-    fn set_member<const MEMBER_ID: felt252, I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
-        entity_id: I, entity: @T,
+    fn set_member<T, I, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
+        member_id: felt252, entity_id: I, entity: @T,
     ) {
-        set_member::<MEMBER_ID>(TABLE, entity_id, entity);
+        set_member(TABLE, member_id, entity_id, entity);
     }
 
-    fn set_models_member<const MEMBER_ID: felt252, I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
-        entities: Array<(I, @T)>,
+    fn set_models_member<T, I, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
+        member_id: felt252, entities: Array<(I, @T)>,
     ) {
-        set_models_member::<MEMBER_ID>(TABLE, entities);
+        set_models_member(TABLE, member_id, entities);
     }
 
-    fn set_schema<I, S, +Drop<I>, +Into<I, felt252>, +Schema<S>>(entity_id: I, schema: @S) {
+    fn set_schema<S, I, +Drop<I>, +Into<I, felt252>, +Schema<S>>(entity_id: I, schema: @S) {
         set_schema(TABLE, entity_id, schema);
     }
 
-    fn set_schemas<I, S, +Drop<I>, +Into<I, felt252>, +Schema<S>>(schemas: Array<(I, @S)>) {
+    fn set_schemas<S, I, +Drop<I>, +Into<I, felt252>, +Schema<S>>(schemas: Array<(I, @S)>) {
         set_schemas(TABLE, schemas);
     }
 
