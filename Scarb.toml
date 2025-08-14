@@ -27,8 +27,8 @@ members = [
 
 [workspace.dependencies]
 starknet = "2.11.4"
-dojo = { git = "https://github.com/dojoengine/dojo" }
-dojo_macros = { git = "https://github.com/dojoengine/dojo" }
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.7.0-alpha.0" }
+dojo_macros = { git = "https://github.com/dojoengine/dojo", tag = "v1.7.0-alpha.0" }
 sai_core_utils = { git = "https://github.com/sai-starknet/cairo-utils", branch = "cairo-2.11.4" }
 sai_access = { git = "https://github.com/sai-starknet/cairo-utils", branch = "cairo-2.11.4" }
 sai_address = { git = "https://github.com/sai-starknet/cairo-utils", branch = "cairo-2.11.4" }
