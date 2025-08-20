@@ -47,8 +47,8 @@ pub impl ConstNsBeaconEmitter<
         emitter
             .emit_update_member(
                 Model::<M>::selector(NAMESPACE_HASH),
-                entity_id,
                 member_selector,
+                entity_id,
                 member.serialize_all(),
             );
     }
@@ -59,7 +59,7 @@ pub impl ConstNsBeaconEmitter<
         let selector = Model::<M>::selector(NAMESPACE_HASH);
         for (entity_id, member) in members {
             emitter
-                .emit_update_member(selector, entity_id, member_selector, member.serialize_all());
+                .emit_update_member(selector, member_selector, entity_id, member.serialize_all());
         }
     }
     fn emit_model_members<M, T, +Model<M>, +Serde<T>>(
@@ -69,7 +69,7 @@ pub impl ConstNsBeaconEmitter<
         let selector = Model::<M>::selector(NAMESPACE_HASH);
         for (member_selector, member) in members {
             emitter
-                .emit_update_member(selector, entity_id, member_selector, member.serialize_all());
+                .emit_update_member(selector, member_selector, entity_id, member.serialize_all());
         }
     }
     fn emit_delete_model<M, +Model<M>>(ref self: TState, entity_id: felt252) {

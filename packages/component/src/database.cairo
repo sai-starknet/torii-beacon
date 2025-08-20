@@ -98,7 +98,7 @@ impl DatabaseImpl<TState, +HasEmitterComponent<TState>, +Drop<TState>> of Torii<
     fn set_member<I, T, +Into<I, felt252>, +Serde<T>>(
         ref self: TState, table_id: felt252, member_id: felt252, entity_id: I, entity: @T,
     ) {
-        self.emit_update_member(table_id, entity_id.into(), member_id, entity.serialize_all());
+        self.emit_update_member(table_id, member_id, entity_id.into(), entity.serialize_all());
     }
 
     fn set_models_member<I, T, +Into<I, felt252>, +Drop<I>, +Serde<T>>(

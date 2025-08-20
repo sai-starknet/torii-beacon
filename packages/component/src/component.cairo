@@ -75,8 +75,8 @@ pub mod emitter_component {
         fn emit_update_member(
             ref self: TState,
             selector: felt252,
-            entity_id: felt252,
             member_selector: felt252,
+            entity_id: felt252,
             values: Span<felt252>,
         );
         fn emit_delete_record(ref self: TState, selector: felt252, entity_id: felt252);
@@ -126,8 +126,8 @@ pub mod emitter_component {
         fn emit_update_member(
             ref self: ComponentState<TContractState>,
             selector: felt252,
-            entity_id: felt252,
             member_selector: felt252,
+            entity_id: felt252,
             values: Span<felt252>,
         ) {
             self.emit(StoreUpdateMember { selector, entity_id, member_selector, values });
@@ -182,8 +182,8 @@ pub mod emitter_component {
         fn emit_update_member(
             ref self: TContractState,
             selector: felt252,
-            entity_id: felt252,
             member_selector: felt252,
+            entity_id: felt252,
             values: Span<felt252>,
         ) {
             let mut contract = self.get_component_mut();

@@ -39,7 +39,7 @@ pub fn emit_update_record(selector: felt252, entity_id: felt252, values: Span<fe
         .unwrap_syscall();
 }
 pub fn emit_update_member(
-    selector: felt252, entity_id: felt252, member_selector: felt252, values: Span<felt252>,
+    selector: felt252, member_selector: felt252, entity_id: felt252, values: Span<felt252>,
 ) {
     emit_event_syscall(
         [selector!("StoreUpdateMember"), selector, entity_id, member_selector].span(),

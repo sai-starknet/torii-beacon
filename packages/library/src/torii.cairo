@@ -35,13 +35,13 @@ pub fn set_entities<I, E, +Drop<I>, +Into<I, felt252>, +Serde<E>>(
 }
 
 pub fn set_member<I, T, +Into<I, felt252>, +Serde<T>>(
-    member_id: felt252, table: felt252, entity_id: I, entity: @T,
+    table: felt252, member_id: felt252, entity_id: I, entity: @T,
 ) {
     emit_update_member(table, member_id, entity_id.into(), entity.serialize_all());
 }
 
 pub fn set_models_member<I, T, +Drop<I>, +Into<I, felt252>, +Serde<T>>(
-    member_id: felt252, table: felt252, entities: Array<(I, @T)>,
+    table: felt252, member_id: felt252, entities: Array<(I, @T)>,
 ) {
     for (entity_id, entity) in entities {
         emit_update_member(table, member_id, entity_id.into(), entity.serialize_all());
