@@ -43,8 +43,8 @@ dependencies = [
 
 [[package]]
 name = "dojo"
-version = "1.6.0-alpha.1"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.7.0-alpha.1#67aeb9f49c6b8c30b1850badd065c9192617c3b2"
+version = "1.7.0-alpha.2"
+source = "git+https://github.com/dojoengine/dojo?tag=v1.7.0-alpha.2#a064752fff355f325cf0b00828d236b399333432"
 dependencies = [
  "dojo_macros",
 ]
@@ -61,8 +61,8 @@ dependencies = [
 
 [[package]]
 name = "dojo_macros"
-version = "1.6.0-alpha.1"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.7.0-alpha.1#67aeb9f49c6b8c30b1850badd065c9192617c3b2"
+version = "1.7.0-alpha.2"
+source = "git+https://github.com/dojoengine/dojo?tag=v1.7.0-alpha.2#a064752fff355f325cf0b00828d236b399333432"
 
 [[package]]
 name = "sai_address"
