@@ -8,39 +8,22 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-cainome = { git = "https://github.com/cartridge-gg/cainome", branch = "snip12", features = [
-    "abigen-rs",
-] }
-cainome-cairo-serde = { git = "https://github.com/cartridge-gg/cainome", branch = "snip12" }
-cairo_lang_reader = { git = "https://github.com/sai-starknet/cairo-lang-reader", branch = "proc-macros" }
-cairo-lang-defs = "*"
-cairo-lang-diagnostics = "*"
-cairo-lang-filesystem = "*"
-cairo-lang-macro = { version = "0.2.0-rc.1", git = "https://github.com/software-mansion/scarb.git" }
-cairo-lang-parser = "*"
+cainome = { version = "0.10.0", features = ["abigen-rs"] }
+cainome-cairo-serde = "0.4.0"
+cairo_lang_reader = { git = "https://github.com/sai-starknet/cairo-lang-reader", branch = "main" }
+cairo-lang-defs = "2.12.3"
+cairo-lang-diagnostics = "2.12.3"
+cairo-lang-filesystem = "2.12.3"
+cairo-lang-macro = { version = "0.2.0", git = "https://github.com/software-mansion/scarb.git" }
+cairo-lang-parser = "2.12.3"
 cairo-lang-primitive-token = "1"
-cairo-lang-syntax = "*"
-cairo-lang-utils = "*"
+cairo-lang-syntax = "2.12.3"
+cairo-lang-utils = "2.12.3"
+
 convert_case = "0.8.0"
 indoc = "2"
 serde = { version = "1.0", features = ["derive"] }
 smol_str = "0.2.2"
-starknet = "0.15.1"
-starknet-crypto = "0.7.3"
-
-[patch.crates-io]
-starknet = { git = "https://github.com/xJonathanLEI/starknet-rs", rev = "ff4222e" }
-starknet-providers = { git = "https://github.com/xJonathanLEI/starknet-rs", rev = "ff4222e" }
-starknet-accounts = { git = "https://github.com/xJonathanLEI/starknet-rs", rev = "ff4222e" }
-starknet-contract = { git = "https://github.com/xJonathanLEI/starknet-rs", rev = "ff4222e" }
-starknet-core = { git = "https://github.com/xJonathanLEI/starknet-rs", rev = "ff4222e" }
-starknet-signers = { git = "https://github.com/xJonathanLEI/starknet-rs", rev = "ff4222e" }
-starknet-macros = { git = "https://github.com/xJonathanLEI/starknet-rs", rev = "ff4222e" }
-cairo-lang-debug = { git = "https://github.com/starkware-libs/cairo", rev = "64b88f06c6261ac67c6b478434c844d4af81e5a3" }
-cairo-lang-defs = { git = "https://github.com/starkware-libs/cairo", rev = "64b88f06c6261ac67c6b478434c844d4af81e5a3" }
-cairo-lang-diagnostics = { git = "https://github.com/starkware-libs/cairo", rev = "64b88f06c6261ac67c6b478434c844d4af81e5a3" }
-cairo-lang-filesystem = { git = "https://github.com/starkware-libs/cairo", rev = "64b88f06c6261ac67c6b478434c844d4af81e5a3" }
-cairo-lang-parser = { git = "https://github.com/starkware-libs/cairo", rev = "64b88f06c6261ac67c6b478434c844d4af81e5a3" }
-cairo-lang-syntax = { git = "https://github.com/starkware-libs/cairo", rev = "64b88f06c6261ac67c6b478434c844d4af81e5a3" }
-cairo-lang-syntax-codegen = { git = "https://github.com/starkware-libs/cairo", rev = "64b88f06c6261ac67c6b478434c844d4af81e5a3" }
-cairo-lang-utils = { git = "https://github.com/starkware-libs/cairo", rev = "64b88f06c6261ac67c6b478434c844d4af81e5a3" }
+starknet = "0.17.0"
+starknet-crypto = "0.8.1"
+starknet-types-core = "0.2.1"

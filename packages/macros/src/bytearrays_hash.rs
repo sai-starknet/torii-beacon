@@ -12,7 +12,7 @@ use std::vec;
 
 pub fn compute_bytearray_hash(value: &str) -> Felt {
     let ba = ByteArray::from_string(value).unwrap_or_else(|_| panic!("Invalid ByteArray: {value}"));
-    poseidon_hash_many(&ByteArray::cairo_serialize(&ba))
+    poseidon_hash_many(ByteArray::cairo_serialize(&ba).iter())
 }
 
 /// Extracts the content from a quoted string

@@ -46,9 +46,10 @@ pub fn beacon_entity(_attr: TokenStream, original: TokenStream) -> ProcMacroResu
 fn remove_struct_derive(node: Struct) -> String {
     let attributes: Vec<String> = node
         .query_attr(DERIVE_ATTR)
-        .iter()
-        .flat_map(|attr| attr.arguments())
-        .map(|arg| arg.get_text().trim().to_string())
+        .flat_map(move |attr| {
+            attr.arguments()
+                .map(|arg| arg.get_text().trim().to_string())
+        })
         .filter(|arg| match arg.as_str() {
             "Copy" | "Drop" | "Clone" | "Debug" | "Default" | "Destruct" | "Hash"
             | "PanicDestruct" | "PartialEq" | "Serde" => false,
