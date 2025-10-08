@@ -3,7 +3,7 @@ version = 1
 
 [[package]]
 name = "beacon_component"
-version = "1.7.3"
+version = "1.7.4"
 dependencies = [
  "beacon_schema",
  "dojo",
@@ -13,7 +13,7 @@ dependencies = [
 
 [[package]]
 name = "beacon_entity"
-version = "1.7.3"
+version = "1.7.4"
 dependencies = [
  "beacon_schema",
  "dojo",
@@ -22,7 +22,7 @@ dependencies = [
 
 [[package]]
 name = "beacon_library"
-version = "1.7.3"
+version = "1.7.4"
 dependencies = [
  "beacon_schema",
  "dojo",
@@ -32,11 +32,11 @@ dependencies = [
 
 [[package]]
 name = "beacon_macros"
-version = "1.7.3"
+version = "1.7.4"
 
 [[package]]
 name = "beacon_schema"
-version = "1.7.3"
+version = "1.7.4"
 dependencies = [
  "sai_core_utils",
 ]
@@ -51,7 +51,7 @@ dependencies = [
 
 [[package]]
 name = "dojo_beacon"
-version = "1.7.3"
+version = "1.7.4"
 dependencies = [
  "beacon_component",
  "beacon_schema",
@@ -79,7 +79,7 @@ source = "git+https://github.com/sai-starknet/cairo-utils?tag=v0.1.4#bf6fcc8a95f
 
 [[package]]
 name = "torii_beacon"
-version = "1.7.3"
+version = "1.7.4"
 dependencies = [
  "beacon_component",
  "beacon_entity",
